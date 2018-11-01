@@ -73,12 +73,12 @@
                     <nav class="main-navigation">
                         <ul>
                             <li>
-                                <a href="home.html">
+                                <a href="index.php">
                                     <span class="nav-caption">Trang chủ</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="home.html">
+                                <a href="index.php">
                                     <span class="nav-caption">Giới thiệu</span>
                                 </a>
                             </li>
