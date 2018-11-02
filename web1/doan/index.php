@@ -11,7 +11,7 @@ if (!isset($_SESSION["IsLogin"])) {
 <head>
 <meta charset="utf-8">
 <!-- InstanceBeginEditable name="doctitle" -->
-<title>Trang chủ</title>
+<title>Trang chủ</title>  
 <!-- InstanceEndEditable -->
 
 <link rel="stylesheet" type="text/css" href="css/style.css">

@@ -156,7 +156,7 @@ if (!isset($_SESSION["IsLogin"])) {
     <!-- TemplateBeginEditable name="EditRegion3" -->
     <div class="main_body"></div>
     <!-- TemplateEndEditable --> </div>
-  <div id="footer">Content for  class "footer" Goes Here</div>
+  <div id="footer">Content for  class "footer" Goes Heres</div>
 </div>
 </body>
 </html>
