@@ -1,258 +1,353 @@
-<?php
-session_start();
-
-if (!isset($_SESSION["IsLogin"])) {
-    $_SESSION["IsLogin"] = 0; // chưa đăng nhập
-}
-?>
-<!doctype html>
-<html><!-- InstanceBegin template="/Templates/index.dwt.php" codeOutsideHTMLIsLocked="false" -->
-<head>
-<meta charset="utf-8">
-<!-- InstanceBeginEditable name="doctitle" -->
-<title>Chi tiết sản phẩm</title>
-<!-- InstanceEndEditable -->
-
-<link rel="stylesheet" type="text/css" href="css/style.css">
-<link rel="stylesheet" type="text/css" href="css/link.css">
-<link rel="stylesheet" type="text/css" href="css/product.css">
-<!-- bxSlider CSS file -->
-<link rel="stylesheet" type="text/css" href="css/jquery.bxslider.css">
-<!-- jQuery library  -->
-<!--
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="/js/jquery.min.js"><\/script>')</script>
---><script src="js/jquery.min.js"></script>
-<!-- bxSlider Javascript file -->
-<script src="js/jquery.bxslider.min.js"></script>
-<!--Code Script -->
-
-<!-- InstanceBeginEditable name="head" -->
-
-<!-- InstanceEndEditable -->
-<script src="js/script.js">
-</script>
-</head>
-
-<body>
-<?php
-	if (!isset($_SESSION['Cart'])) {
-		$_SESSION['Cart'] = array();
-	}
-?>
-<!-- InstanceBeginEditable name="EditRegion4" -->
-<?php
-		require_once '/entities/Products.php';
-		require_once '/helper/CartProcessing.php';
-        // đặt hàng
-
-        if (isset($_POST["btnDatHang"])) {
-            $masp = $_GET["proID"];
-            $solg = $_POST["txtSoLuong"];
-            CartProcessing::addItem($masp, $solg);
-        }
-        ?>
-<!-- InstanceEndEditable -->
-<div class="list">
-  <div class="tl">HÃNG SẢN XUẤT</div>
-  <?php
-	require_once '/entities/categories.php';
-	require_once '/entities/classify.php';
-	require_once '/helper/Utils.php';
-	$categories = categories::loadAll();
-	for ($i = 0, $n = count($categories); $i < $n; $i++) 
-	{
-		$name = $categories[$i]->getCatName();
-		$id = $categories[$i]->getCatId();
-		?>
-  <a href="productsByCat.php?catId=<?php echo $id; ?>" class="listmenu"><?php echo $name; ?></a>
-  <?php
-     }
-     ?>
-  <div class="tl">PHÂN LOẠI</div>
-  <?php $classify = Classify::LoadClassify();
-   for($i =0, $n=count($classify);$i<$n;$i++)
-   {
-	   $cid = $classify[$i]->getCId();
-	   $cname = $classify[$i]->getCName();
-	?>
-  <a href="productsByCat.php?cId=<?php echo $cid; ?>" class="listmenu"><?php echo $cname; ?></a>
-  <?php } ?>
-</div>
-<div id="top">
-  <div class="search">
-    <form id="frSearch"  name="frSearch" method="post" action="">  
-      <input name="txtSearch" type="search" class="txtSearch" id="txtSearch" placeholder="Search">
-      <input type="submit" id="btnSearch" name="btnSearch" value ="Search" class="blueButton" >  </br>
-      <select name="selectHSX" id="selectHSX" >
-    	<option value="0">All</option>
-        <?php
-        for ($i = 0, $n = count($categories); $i < $n; $i++) 
-		{
-			$name = $categories[$i]->getCatName();
-			$id = $categories[$i]->getCatId(); ?>
-        	<option value="<?php echo $id; ?>"><?php echo $name; ?></option>
-  		<?php }?>
-      </select>
-      
-      <select name="selectLoai" id="selectLoai" >
-    	<option value="0">All</option>
-       <?php $classify = Classify::LoadClassify();
-   for($i =0, $n=count($classify);$i<$n;$i++)
-   {
-	   $cid = $classify[$i]->getCId();
-	   $cname = $classify[$i]->getCName();
-	?>
-        	<option value="<?php echo $cid; ?>"><?php echo $cname; ?></option>
-  		<?php }?>
-      </select>
-       
-       <select name="selectGia" id="selectGia" >
-    		<option value="100000000">All</option>
-        	<option value="10000000">< 10 triệu </option>
-            <option value="20000000">< 20 triệu </option>
-        	<option value="30000000">< 30 triệu </option>
-        	<option value="40000000">< 40 triệu </option>
-        	<option value="50000000">< 50 triệu </option>
-      </select>
-</form>
-
-
-    <?php 
-	if(isset($_POST["btnSearch"]))
-	{
-		$value = str_replace("'","",$_POST['txtSearch']);
-		$value = str_replace("  ","",$value);
-		$value = str_replace(" ","%",$value);
-
-		$url ="search.php?nsx=".$_POST['selectHSX']."&value=".$value."&loai=".$_POST['selectLoai']."&gia=".$_POST['selectGia'];
-		Utils::RedirectTo($url);
-	}
-	?>
-  </div>
-  <div class="userCommand">
-    <?php
-		require_once '/helper/Context.php';
-		require_once '/helper/CartProcessing.php';
-	if (!Context::isLogged()) {
-		?>
-    <a href="login.php" class="ucmd">Đăng nhập</a> <span style="float:left;">|</span> <a href="register.php" class="ucmd">Đăng ký</a>
-    <?php
-} else {
-    ?>
-    <a href="cart.php" class="ucmd"><?php echo CartProcessing::countQuantity();?> Sản phẩm</a> <span style="float:left;">|</span> <a href="profile.php" class="ucmd">Hi, <?php echo $_SESSION["CurrentUser"]; ?>!</a> <span style="float:left;">|</span> <a href="logout.php" class="ucmd">Thoát</a>
-    <?php
-}
-?>
-  </div>
-</div>
-<div id="main">
-  <div id="header">
-    <ul class="bxslider">
-      <?php for($i=1;$i<7;$i++) { ?>
-      <li><img src="imgs/banners/<?php echo $i?>.jpg"  alt=""/></li>
-      <?php }?>
-    </ul>
-  </div>
-  <div id="navigation">
-    <ul>
-      <li><a href="index.php" class="nav">TRANG CHỦ</a></li>
-      <li><a href="productsByCat.php" class="nav">SẢN PHẨM</a></li>
-      <li><a href="#" class="nav">LIÊN HỆ</a></li>
-      <li><a href="#" class="nav">THÔNG TIN</a></li>
-    </ul>
-  </div>
-  <hr class="hrm"/>
-  <div id="body">
-    <div class="info_address"> </div>
-    <!-- InstanceBeginEditable name="EditRegion3" -->
-    <div class="main_body">
-      <?php
-		$p_proId = $_GET["proID"];
-        $product = Products::loadProductByProId($p_proId);
-		Products::AddView($p_proId);
-		?>
-      <div class="image_proid">
-        <center>
-          <div id="div1"> <img id="big" src="imgs/products/<?php echo $p_proId?>/1.jpg" width="400" height="400" alt"No image!"/> </div>
-          <div> 
-            <script type="text/javascript">
-				for (var i = 1; i <= 5; i++ ) {
-					var html = "<img class='thumbs' src='imgs/products/<?php echo $p_proId?>/"+ i +".jpg' width='80' height='80' onclick='changeImage(this.src)' />";
-					document.write(html);
-				}
-			</script> 
-          </div>
-        </center>
-      </div>
-      <strong style="font-size:20px;"><?php echo $product->getProName()?></strong>
-      <div class="TinyDes_proid">
-        <hr class="hrd" width="100px"/>
-        <span>Giá:</span> <span style="color:#09E730;"><?php echo number_format($product->getPrice())?> Đ</span><br/>
-        <span>Số lượng:</span> <?php echo $product->getQuantity()?><br/>
-        <span>Số lượt xem:</span> <?php echo $product->getView()?><br/>
-        <hr class="hrd" width="200px"/>
-        <?php echo $product->getTinyDes();?> <br/>
-        <?php if ($_SESSION["IsLogin"] && $product->getQuantity() >0) {?>
-        <form id="fr"  name="fr" method="post" action="">
-          <input type="number" id="txtSoLuong" name="txtSoLuong" min="0" value="0">
-          <br/>
-          <input type="submit" id="btnDatHang" name="btnDatHang"  value="Đặt hàng" class="blueButton"/>
-        </form>
-        <?php } ?>
-      </div>
-      
-      <?php 
-	  
-	  $listCungLoai=Products::loadProductsCungLoai($product->getClassify(),$p_proId);
-	  $ncl = count($listCungLoai);
-	  ?>
-      <div class="spCungLoai">
-      <strong>Các sản phẩm cùng loại</strong>
-<br/>
-	  <?php 
-	  for($i=0; $i<$ncl; $i++){
-		  ?>
-          		 <a href="details.php?proID=<?php echo $listCungLoai[$i]->getProId();?>" style="cursor:pointer;">
-
-          <div class="product">
-         <img src="imgs/products/<?php echo $listCungLoai[$i]->getProId();?>/1.jpg" width="150" height="150" alt=""/>
-         <br/>
-         <span style="clear:both; color:rgba(0,51,255,1); font-size:10px;"><?php echo $listCungLoai[$i]->getProName();?></span>
-         </div></a>
-	<?php  } ?>
-      </div>
-      
-      
-            <?php 
-	  
-	  $listCungNSX=Products::loadProductsCungNSX($product->getCatId(),$p_proId);
-	  $ncnsx = count($listCungNSX);
-	  ?>
-
-      <div class="spCungNsx">
-            <strong>Các sản phẩm cùng Nhà Sản Xuất</strong>
-<br/>
-
-       <?php 
-	  for($i=0; $i<$ncnsx; $i++){
-		  ?>
-          		 <a href="details.php?proID=<?php echo $listCungNSX[$i]->getProId();?>" style="cursor:pointer;">
-
-          <div class="product">
-         <img src="imgs/products/<?php echo $listCungNSX[$i]->getProId();?>/1.jpg" width="150" height="150" alt=""/>
-         <br/>
-         <span style="clear:both; color:rgba(0,51,255,1); font-size:10px;"><?php echo $listCungLoai[$i]->getProName();?></span>
-         </div></a>
-	<?php  } ?>
-      </div>
-      
-      <div class="FullDes_proid">
-        <hr class="hrd"/>
-        <?php echo $product->getFullDes();?> </div>
-    </div>
-    <!-- InstanceEndEditable --> </div>
-  <div id="footer">Content for  class "footer" Goes Here</div>
-</div>
-</body>
-<!-- InstanceEnd --></html>
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Taka Graden - Products </title>
+		<meta charset="UTF-8">
+		<meta name="keywords" content="html,htm5,web">
+		<meta name="description" content="Do an web, products, san pham">
+		<link href="img/logog.png" rel="shourtcut icon" />
+		
+		<!-- Style CSS -->
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+	
+  
+	</head>
+	<body class="main">
+		<!-- Header -->
+		<header class="header">
+			<div class="header-top">
+            	<div class="container">
+					<div class="top-header">
+						<div class="row">
+							<div class="col-md-6 col-sm-6 col-xs-6">
+								<ul class="topbar-left">
+									<li ><i class="fa fa-phone" aria-hidden="true"></i><a href="tel:01202582956">Hotline: 01202582956</a></li>
+									<li class="hidden-xs"><i class="fa fa-facebook-square" aria-hidden="true"></i> <a target="_blank" href="https://www.facebook.com/takagarden/">www.facebook.com/takagarden</a></li>
+								</ul>
+							</div>
+							
+							<div class="col-md-6 col-sm-6 col-xs-6">
+								<ul class="topbar-right">
+									<li><i class="fa fa-user" aria-hidden="true"></i><a href="#">Đăng nhập</a></li>
+									<li style="margin-right: 0;"><i class="fa fa-lock" aria-hidden="true"></i><a href="#">Đăng ký</a></li>
+								</ul>
+							</div>
+						</div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-logo">
+            	<div class="container">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-5">
+                            <div class="logo"><a href="home.html"><abbr title="Logo"><img src="img/logo-small.png" /></abbr></a> </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="search">
+                                <form class="search-form" action="#" method="get">
+                                    <input class="s-input" type="text" placeholder="Tìm kiếm sản phẩm..." />
+                                    <button class="btn-search" type="submit">
+                                    	<span>Tìm kiếm</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-3 hidden-xs">
+                            <div class="box-cart">
+                            	<ul>
+                                	<li><a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i>Yêu thích</a></li>
+                                    <li><a href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Giỏ hàng</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-menu hidden-xs">
+                <div class="container">
+                    <nav class="main-navigation">
+                        <ul>
+                            <li>
+                                <a href="home.html">
+                                    <span class="nav-caption">Trang chủ</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="category.html">
+                                    <span class="nav-caption">Giới thiệu</span>
+                                </a>
+                            </li>
+                            <li class="submenu">
+                                <a href="category.html" id="idMenu">
+                                    <span class="nav-caption">Sản phẩm</span>
+                                </a>
+                                <ul class="sub_menu" >
+                                    <li><a href="category.html">Sen đá</a>
+                                    </li>
+                                    <li><a href="category.html">Xương Rồng</a>
+                                    </li>
+                                    <li><a href="category.html">Terrarium</a>
+                                    </li>
+                                    <li><a href="category.html">Chậu</a>
+                                    </li>
+                                    <li><a href="category.html">Phụ kiện trang trí</a>
+                                    </li>
+                                    <li><a href="#">Sản phẩm bán chạy</a>
+                                    </li>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="blog.html">
+                                    <span class="nav-caption">Tin tức</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="blog.html">
+                                    <span class="nav-caption">Khuyến mãi</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="contact.html">
+                                    <span class="nav-caption">Liên hệ</span>
+                                </a>
+                            </li>
+                        </ul>		
+                    </nav>
+                </div>
+             </div>
+		</header>
+		<!-- /Header -->
+		
+		<!-- Content -->
+		<div class="content">
+			<div class="container">
+				<div class="row">
+					<div class="col-md-12 col-sm-12">
+						<div class="breadcrumbs">
+							<p>
+								<a href="home.html">Trang chủ</a> 
+								<i class="fa fa-caret-right"></i> 
+								<a href="#">Sản phẩm</a> 
+								<i class="fa fa-caret-right"></i>
+								Xương rồng
+							</p>
+						</div>
+					</div>
+				</div>
+				<div class="row">
+               		<div class="sidebar col-md-3 col-sm-3 col-xs-12">
+						<div class="side-box dmsp">
+							<div class="side-box-heading">
+								<i class="fa fa-folder-open-o" aria-hidden="true"></i>
+								<h4>Danh mục sản phẩm</h4>
+							</div>
+							<div class="side-box-content">
+								<ul>
+									<li><a href="category.html">Sen đá</a></li>
+									<li><a href="category.html">Xương rồng</a></li>
+									<li><a href="category.html">Terrarium</a></li>
+									<li><a href="category.html">Chậu</a></li>
+									<li><a href="category.html">Phụ kiện trang trí</a></li>
+									<li><a href="category.html">Sản phẩm bán chạy</a></li>
+									<li><a href="category.html">Sản phẩm nổi bật</a></li>
+									<li><a class="purple" href="category.html">Tất cả sản phẩm</a></li>
+								</ul>
+							</div>
+						</div>
+						
+						<div class="side-box related-prod">
+							<div class="side-box-heading">
+								<i class="fa fa-star-o" aria-hidden="true"></i>
+								<h4>Sản phẩm liên quan</h4>
+							</div>
+							<div class="side-box-content">
+								<table class="related-table">
+									<tbody>
+										<tr>
+											<td class="product-thumbnail"><a href="#"><img src="img/products/Xuong rong/Xương rồng khế.jpg" alt="Product1"></a></td>
+											<td class="product-info">
+												<p><a href="#">Xương rồng khế</a></p>
+												<span class="price">50.000VND</span>
+											</td>
+										</tr>
+										
+										<tr>
+											<td class="product-thumbnail"><a href="#"><img src="img/products/Xuong rong/Gymno đỏ.jpg" alt="Product1"></a></td>
+											<td class="product-info">
+												<p><a href="#">Xương rồng đỏ</a></p>
+												<span class="price">50.000VND</span>
+											</td>
+										</tr>
+										
+										<tr>
+											<td class="product-thumbnail"><a href="#"><img src="img/products/Xuong rong/Tai thỏ.jpg" alt="Product1"></a></td>
+											<td class="product-info">
+												<p><a href="#">Tai thỏ</a></p>
+												<span class="price">50.000VND</span>
+											</td>
+										</tr>
+										<tr>
+											<td class="product-thumbnail"><a href="#"><img src="img/products/Xuong rong/Thần long lớn.jpg" alt="Product1"></a></td>
+											<td class="product-info">
+												<p><a href="#">Thần long lớn</a></p>
+												<span class="price">50.000VND</span>
+											</td>
+										</tr>
+										
+										<tr>
+											<td class="product-thumbnail"><a href="#"><img src="img/products/Xuong rong/Thần long mini.jpg" alt="Product1"></a></td>
+											<td class="product-info">
+												<p><a href="#">Thần long mini</a></p>
+												<span class="price">50.000VND</span>
+											</td>
+										</tr>
+										
+									</tbody>
+								</table>
+							</div>
+						</div>
+					</div>
+					<div class="col-lg-9 col-md-9 col-sm-9">
+                        	<div class="details-product">
+                                <div class="col-md-6 images-pro">
+                                  <abbr title="Hoa xương rồng"><img src="img/products/Xuong rong/Gymno Tím.jpg" style="max-width:400px"></abbr>
+                                </div>
+                                <div class="col-md-6 details-pro">
+                                	<h2>Xương Rồng Tím</h2>
+                                    <p class="price-pro">Giá: <span>50.000VND </span><del>69.000VND</del></p>
+                                    <p class="in-stock">Tình trạng: Còn hàng</p>
+                                 <p class="number">Số lượng: <input type="number" id="txtNumber" min="0" style="width:50px" value="1"/></p>
+                                    <button id="btnMuahang" type="button">Thêm vào giỏ hàng</button>
+                                </div>
+                         	</div>
+							<div class="tab-wrapper">
+								<ul class="tab">
+									<li>
+										<a href="#tab-main-info">Chi tiết sản phẩm</a>
+									</li>
+									<li>
+										<a href="#tab-image">Hình ảnh</a>
+									</li>
+									<li>
+										<a href="#tab-seo">Đánh giá sản phẩm</a>
+									</li>
+								</ul>
+								<div class="tab-content">
+									<div class="tab-item" id="tab-main-info">
+										<p>Cây xương rồng đại diện cho một con người cứng rắn mạnh mẽ mà giàu tình cảm nhưng chẳng bao giờ thể hiện ra ngoài , về tình yêu , nó đại diện cho một thứ tình yêu nồng nàn , bốc lửa , mãnh liệt , thủy chung nhưng lại thầm kín , lặng lẽ chưa dám thổ lộ.</p>
+										<div> <img src="img/detail-pro/xuongrong1.jpg" style="width: 300px;" /></div>
+										
+										<p>Câu chuyện bắt đầu là hình ảnh cây xương rồng cằn cỗi ở một vùng hẻo lánh và âm u. Nơi ấy chỉ có con người tất bật với cuộc sống đầy khó khăn với những nỗi lo. Nơi ấy có 2 người yêu nhau Nhưng điều đáng buồn là cả 2 người đều không dám thổ lộ. Đến 1 ngày khi họ ngồi tâm sự với nhau và rồi một người đã dũng cảm thổ lộ trong nỗi lo,và chờ đợi Nhưng ngày này qua ngày khác chàng trai chỉ nhận được từ người kia chậu cây xương rồng. Thật lạ!Theo thời gian tình yêu ấy nhạt phai,một người thì thật vọng còn người kia thì hi vọng sẽ hiểu tình cảm của mình. </p>
+									</div>
+									<div class="tab-item" id="tab-image">
+										Hình ảnh về cây xương rồng...
+									</div>
+									<div class="tab-item" id="tab-seo">
+										Nội dung đánh giá đang được cập nhật...
+									</div>
+								</div>
+							</div>	
+					</div>
+					
+					
+				</div>
+			</div>
+		</div>
+		<!-- /Content -->
+		
+		<!-- Footer -->
+        <footer id="footer" class="container">
+			<div id="main-footer">
+				<div class="row">
+					<!-- Contact Us -->
+					<div class="col-lg-3 col-md-4 col-sm-6 contact-footer-info">
+						<h4><i class="fa fa-pagelines" aria-hidden="true"></i>Về chúng tôi</h4>
+						<ul class="list-menu info">
+							<li><i class="fa fa-map-marker" aria-hidden="true"></i>371 Nguyễn Kiệm, TP.HCM</li>
+							<li><i class="fa fa-phone" aria-hidden="true"></i>01202582956</li>
+							<li><i class="fa fa-envelope-o" aria-hidden="true"></i>takagraden@gmail.com</li>
+							<li><i class="fa fa-skype" aria-hidden="true"></i>takagraden</li>
+						</ul>
+					</div>
+					<!-- /Contact Us -->
+					
+					<!-- Information -->
+					<div class="col-lg-3 col-md-2 col-sm-6">
+						<h4><i class="fa fa-pagelines" aria-hidden="true"></i>Tài khoản</h4>
+						<ul class="list-menu">
+							<li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> Đơn hàng </a></li>
+							<li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> Sản phẩm yêu thích</a></li>
+							<li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> Đăng nhập tài khoản</a></li>
+							<li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> Tìm kiếm sản phẩm</a></li>
+						</ul>
+					</div>
+					<!-- /Information -->
+					
+					
+					<div class="col-lg-3 col-md-3 col-sm-6">
+						<h4><i class="fa fa-pagelines" aria-hidden="true"></i>Hỗ trợ khách hàng</h4>
+						<ul class="list-menu">
+							<li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> Hướng dẫn đặt hàng</a></li>
+							<li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> Hướng dẫn thanh toán</a></li>
+							<li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> Chính sách vận chuyển</a></li>
+							<li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> Chính sách đổi trả</a></li>
+						</ul>
+					</div>
+					
+					<!-- Like us on Social -->
+					<div class="col-lg-3 col-md-3 col-sm-6 facebook-iframe">
+						<h4><i class="fa fa-pagelines" aria-hidden="true"></i>Hình thức thanh toán</h4>
+						<ul class="list-menu">
+							<img src="img/payment.png"/>
+						</ul>
+						<h4><i class="fa fa-pagelines" aria-hidden="true"></i>Mạng xã hội</h4>
+						<ul class="footer-social">
+							<li class="fb">
+								<a href="#" target="_blank">
+									<i class="fa fa-facebook" aria-hidden="true"></i>
+								</a>
+							</li>
+							<li class="tt">
+								<a href="#" target="_blank">
+									<i class="fa fa-twitter" aria-hidden="true"></i>
+								</a>
+							</li>
+							<li class="ins">
+								<a href="#" target="_blank">
+									<i class="fa fa-instagram" aria-hidden="true"></i>
+								</a>
+							</li>
+							<li class="yt">
+								<a href="#" target="_blank">
+									<i class="fa fa-youtube" aria-hidden="true"></i>
+								</a>
+							</li>
+							<li class="gp">
+								<a href="#" target="_blank">
+									<i class="fa fa-google-plus" aria-hidden="true"></i>
+								</a>
+							</li>
+						</ul>
+					</div>
+					<!-- /Like us on Social -->
+					
+				</div>
+						
+			</div>
+			<div id="copyright">&copy; Bản quyền thuộc về <b>Taka Graden</b></div>
+        </footer>
+		<!-- /Footer -->
+        
+        <!-- Backtotop -->
+        <div class="back-to-top"><i class="fa fa-angle-up" aria-hidden="true"></i></div>
+		<!-- /Backtotop -->
+        
+		<!-- Javascript -->
+		<script src="js/bootstrap.min.js"></script>
+        <script src="js/jquery-3.3.1.min.js"></script>
+        <script src="js/main-script.js"></script>
+		
+	</body>
+</html>
