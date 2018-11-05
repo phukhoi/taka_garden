@@ -44,5 +44,18 @@ class categories {
         return $ret;
     }
    
+    public static function getCategoryById($id){
+        $ret = array();
+        $sql = "select * from categories where CatId = $id ";
+        $list = DataProvider::execQuery($sql);
+        while( $row = mysql_fetch_array($list) ){
+            $id = $row["CatId"];
+            $name = $row["CatName"];
+            $c = new categories($id, $name);
+            
+            array_push($ret, $c);
+        }
+        return $ret[0];
+    }
 		
 }

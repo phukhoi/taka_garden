@@ -1281,3 +1281,19 @@ div#tab-main-info img {
 }
 
 }
+.text-center{
+    text-align: center;
+}
+td{
+    padding: 3px;
+}
+.blueButton{
+    border: none;
+    background: cornflowerblue;
+    border-radius: 5px;
+    color: #fff;
+    padding: 10px 20px;
+}
+input{
+    border-radius: 5px;
+}

@@ -1,3 +1,35 @@
+<?php
+session_start();
+
+if (!isset($_SESSION["IsLogin"])) {
+    $_SESSION["IsLogin"] = 0; // chưa đăng nhập
+}
+require_once '/entities/categories.php';
+require_once '/entities/classify.php';
+require_once '/helper/Utils.php';
+require_once '/entities/Products.php';
+require_once '/helper/CartProcessing.php';
+require_once '/helper/Context.php';
+// đặt hàng
+if (isset($_POST["btnDatHang"])) {
+	$masp = $_GET["proID"];
+	$solg = $_POST["txtSoLuong"];
+	CartProcessing::addItem($masp, $solg);
+}
+
+$categories = categories::loadAll();
+$p_proId = $_GET["proID"];
+$product = Products::loadProductByProId($p_proId);
+
+$relatedProduct  = Products::loadProductsByCatId($product->catId);
+?>
+
+<?php
+	if (!isset($_SESSION['Cart'])) {
+		$_SESSION['Cart'] = array();
+	}
+?>
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -30,8 +62,23 @@
 							
 							<div class="col-md-6 col-sm-6 col-xs-6">
 								<ul class="topbar-right">
-									<li><i class="fa fa-user" aria-hidden="true"></i><a href="#">Đăng nhập</a></li>
-									<li style="margin-right: 0;"><i class="fa fa-lock" aria-hidden="true"></i><a href="#">Đăng ký</a></li>
+								<?php
+											
+									if (!Context::isLogged()) {
+									?>
+									<li><i class="fa fa-user" aria-hidden="true"></i><a href="login.php">Đăng nhập</a></li>
+									<li style="margin-right: 0;"><i class="fa fa-lock" aria-hidden="true"></i><a href="register.php">Đăng ký</a></li>
+									<!-- <a href="login.php" class="ucmd">Đăng nhập</a> <span style="float:left;">|</span> <a href="register.php" class="ucmd">Đăng ký</a> -->
+									<?php
+									} else {
+										?>
+										<li><i class="fa fa-user" aria-hidden="true"></i><a href="cart.php"><?php echo CartProcessing::countQuantity();?> Sản phẩm</a></li>
+										<li><i class="fa fa-user" aria-hidden="true"></i><a href="profile.php">Chào,  <?php echo $_SESSION["CurrentUser"]; ?>!</a></li>
+										<li><i class="fa fa-user" aria-hidden="true"></i><a href="logout.php">Thoát</a></li>
+										<!-- <a href="cart.php" class="ucmd"><?php echo CartProcessing::countQuantity();?> Sản phẩm</a> <span style="float:left;">|</span> <a href="profile.php" class="ucmd">Hi, <?php echo $_SESSION["CurrentUser"]; ?>!</a> <span style="float:left;">|</span> <a href="logout.php" class="ucmd">Thoát</a> -->
+										<?php
+									}
+									?>
 								</ul>
 							</div>
 						</div>
@@ -84,18 +131,16 @@
                                     <span class="nav-caption">Sản phẩm</span>
                                 </a>
                                 <ul class="sub_menu" >
-                                    <li><a href="category.html">Sen đá</a>
-                                    </li>
-                                    <li><a href="category.html">Xương Rồng</a>
-                                    </li>
-                                    <li><a href="category.html">Terrarium</a>
-                                    </li>
-                                    <li><a href="category.html">Chậu</a>
-                                    </li>
-                                    <li><a href="category.html">Phụ kiện trang trí</a>
-                                    </li>
-                                    <li><a href="#">Sản phẩm bán chạy</a>
-                                    </li>
+                                    <?php
+                                        for ($i = 0, $n = count($categories); $i < $n; $i++) 
+                                        {
+                                            $name = $categories[$i]->getCatName();
+                                            $id = $categories[$i]->getCatId();
+                                    ?>
+                                    <li><a href="productsByCat.php?catId=<?php echo $id; ?>"><?php echo $name; ?></a></li>
+                                    <?php
+                                    }
+                                    ?>
                                 </ul>
                             </li>
                             <li>
@@ -145,11 +190,16 @@
 							</div>
 							<div class="side-box-content">
 								<ul>
-									<li><a href="category.html">Sen đá</a></li>
-									<li><a href="category.html">Xương rồng</a></li>
-									<li><a href="category.html">Terrarium</a></li>
-									<li><a href="category.html">Chậu</a></li>
-									<li><a href="category.html">Phụ kiện trang trí</a></li>
+                                    <?php
+                                        for ($i = 0, $n = count($categories); $i < $n; $i++) 
+                                        {
+                                            $name = $categories[$i]->getCatName();
+                                            $id = $categories[$i]->getCatId();
+                                    ?>
+                                    <li><a href="productsByCat.php?catId=<?php echo $id; ?>"><?php echo $name; ?></a></li>
+                                    <?php
+                                    }
+                                    ?>
 									<li><a href="category.html">Sản phẩm bán chạy</a></li>
 									<li><a href="category.html">Sản phẩm nổi bật</a></li>
 									<li><a class="purple" href="category.html">Tất cả sản phẩm</a></li>
@@ -165,45 +215,18 @@
 							<div class="side-box-content">
 								<table class="related-table">
 									<tbody>
+                                        <?php 
+                                        for($i = 0; $i < 4; $i++){
+                                            
+                                        ?>
 										<tr>
-											<td class="product-thumbnail"><a href="#"><img src="img/products/Xuong rong/Xương rồng khế.jpg" alt="Product1"></a></td>
+											<td class="product-thumbnail"><a href="details.php?proID=<?php echo $relatedProduct[$i]->proId;?>"><img src="imgs/products/<?php echo $relatedProduct[$i]->proId;;?>/1.jpg" alt="Product1"></a></td>
 											<td class="product-info">
-												<p><a href="#">Xương rồng khế</a></p>
-												<span class="price">50.000VND</span>
+												<p><a href=""><?php echo $relatedProduct[$i]->proName?></a></p>
+												<span class="price"> <?php echo number_format($relatedProduct[$i]->price) ?> VND</span>
 											</td>
 										</tr>
-										
-										<tr>
-											<td class="product-thumbnail"><a href="#"><img src="img/products/Xuong rong/Gymno đỏ.jpg" alt="Product1"></a></td>
-											<td class="product-info">
-												<p><a href="#">Xương rồng đỏ</a></p>
-												<span class="price">50.000VND</span>
-											</td>
-										</tr>
-										
-										<tr>
-											<td class="product-thumbnail"><a href="#"><img src="img/products/Xuong rong/Tai thỏ.jpg" alt="Product1"></a></td>
-											<td class="product-info">
-												<p><a href="#">Tai thỏ</a></p>
-												<span class="price">50.000VND</span>
-											</td>
-										</tr>
-										<tr>
-											<td class="product-thumbnail"><a href="#"><img src="img/products/Xuong rong/Thần long lớn.jpg" alt="Product1"></a></td>
-											<td class="product-info">
-												<p><a href="#">Thần long lớn</a></p>
-												<span class="price">50.000VND</span>
-											</td>
-										</tr>
-										
-										<tr>
-											<td class="product-thumbnail"><a href="#"><img src="img/products/Xuong rong/Thần long mini.jpg" alt="Product1"></a></td>
-											<td class="product-info">
-												<p><a href="#">Thần long mini</a></p>
-												<span class="price">50.000VND</span>
-											</td>
-										</tr>
-										
+                                        <?php }?>
 									</tbody>
 								</table>
 							</div>
@@ -212,14 +235,21 @@
 					<div class="col-lg-9 col-md-9 col-sm-9">
                         	<div class="details-product">
                                 <div class="col-md-6 images-pro">
-                                  <abbr title="Hoa xương rồng"><img src="img/products/Xuong rong/Gymno Tím.jpg" style="max-width:400px"></abbr>
+                                  <abbr title="Hoa xương rồng"><img src="imgs/products/<?php echo $product->proId;;?>/1.jpg" style="max-width:400px"></abbr>
                                 </div>
                                 <div class="col-md-6 details-pro">
-                                	<h2>Xương Rồng Tím</h2>
-                                    <p class="price-pro">Giá: <span>50.000VND </span><del>69.000VND</del></p>
-                                    <p class="in-stock">Tình trạng: Còn hàng</p>
-                                 <p class="number">Số lượng: <input type="number" id="txtNumber" min="0" style="width:50px" value="1"/></p>
-                                    <button id="btnMuahang" type="button">Thêm vào giỏ hàng</button>
+                                	<h2><?php echo $product->proName ?></h2>
+                                    <p class="price-pro">Giá: <span><?php echo number_format($product->price); ?> VND </span></p>
+                                    <!-- <p class="price-pro">Giá: <span>50.000VND </span><del>69.000VND</del></p> -->
+                                    <p class="in-stock">Tình trạng: <?php echo $product->quantity > 0 ? 'Còn hàng' : 'Hết hàng' ?></p>
+                                    <?php 
+                                    if( $_SESSION["IsLogin"] && $product->quantity > 0 ){
+                                    ?>
+										<form id="fr"  name="fr" method="post" action="">
+											<p class="number">Số lượng: <input type="number" id="txtSoLuong" name="txtSoLuong" min="0" style="width:50px" value="0"/></p>
+											<input id="btnDatHang" name="btnDatHang" type="submit" value="Thêm vào giỏ hàng " class="blueButton" />
+										</form>
+                                    <?php }?>
                                 </div>
                          	</div>
 							<div class="tab-wrapper">
@@ -236,10 +266,7 @@
 								</ul>
 								<div class="tab-content">
 									<div class="tab-item" id="tab-main-info">
-										<p>Cây xương rồng đại diện cho một con người cứng rắn mạnh mẽ mà giàu tình cảm nhưng chẳng bao giờ thể hiện ra ngoài , về tình yêu , nó đại diện cho một thứ tình yêu nồng nàn , bốc lửa , mãnh liệt , thủy chung nhưng lại thầm kín , lặng lẽ chưa dám thổ lộ.</p>
-										<div> <img src="img/detail-pro/xuongrong1.jpg" style="width: 300px;" /></div>
-										
-										<p>Câu chuyện bắt đầu là hình ảnh cây xương rồng cằn cỗi ở một vùng hẻo lánh và âm u. Nơi ấy chỉ có con người tất bật với cuộc sống đầy khó khăn với những nỗi lo. Nơi ấy có 2 người yêu nhau Nhưng điều đáng buồn là cả 2 người đều không dám thổ lộ. Đến 1 ngày khi họ ngồi tâm sự với nhau và rồi một người đã dũng cảm thổ lộ trong nỗi lo,và chờ đợi Nhưng ngày này qua ngày khác chàng trai chỉ nhận được từ người kia chậu cây xương rồng. Thật lạ!Theo thời gian tình yêu ấy nhạt phai,một người thì thật vọng còn người kia thì hi vọng sẽ hiểu tình cảm của mình. </p>
+										<?php echo $product->fullDes; ?>
 									</div>
 									<div class="tab-item" id="tab-image">
 										Hình ảnh về cây xương rồng...

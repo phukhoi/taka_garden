@@ -4,299 +4,487 @@ session_start();
 if (!isset($_SESSION["IsLogin"])) {
     $_SESSION["IsLogin"] = 0; // chưa đăng nhập
 }
-?>
-<!doctype html>
-<html><!-- InstanceBegin template="/Templates/index.dwt.php" codeOutsideHTMLIsLocked="false" -->
-<head>
-<meta charset="utf-8">
-<!-- InstanceBeginEditable name="doctitle" -->
-    <title>Đăng ký tài khoản</title>
-    <!-- InstanceEndEditable -->
+require_once '/entities/categories.php';
+require_once '/entities/classify.php';
+require_once '/helper/Utils.php';
+require_once '/entities/Products.php';
+require_once '/helper/CartProcessing.php';
+require_once '/helper/Context.php';
 
-<link rel="stylesheet" type="text/css" href="css/style.css">
-<link rel="stylesheet" type="text/css" href="css/link.css">
-<link rel="stylesheet" type="text/css" href="css/product.css">
-<!-- bxSlider CSS file -->
-<link rel="stylesheet" type="text/css" href="css/jquery.bxslider.css">
-<!-- jQuery library  -->
-<!--
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/2.1.1/jquery.min.js"></script>
-<script>window.jQuery || document.write('<script src="/js/jquery.min.js"><\/script>')</script>
---><script src="js/jquery.min.js"></script>
-<!-- bxSlider Javascript file -->
-<script src="js/jquery.bxslider.min.js"></script>
-<!--Code Script -->
-
-<!-- InstanceBeginEditable name="head" -->
-    <script src="js/check.js"></script>
-
-    <!-- InstanceEndEditable -->
-<script src="js/script.js">
-</script>
-</head>
-
-<body>
-<?php
-	if (!isset($_SESSION['Cart'])) {
-		$_SESSION['Cart'] = array();
-	}
-?>
-<!-- InstanceBeginEditable name="EditRegion4" -->
-
-<?php
-        require_once '/helper/Utils.php';
-        require_once '/entities/User.php';
-
-        if (isset($_POST["btnDangKy"])) {
-            $tendn = $_POST["txtTenDN"];
-            $mk = $_POST["txtMK"];
-            $hoTen = $_POST["txtHoTen"];
-            $email = $_POST["txtEmail"];
-            $ngaySinh = $_POST["txtNgaySinh"]; // 28/11/2014
-			
-            $dob = strtotime(str_replace('/', '-', $ngaySinh)); //d-m-Y
-
-			$listName = User::loadUserName();
-			
-			$flag = true;
-			
-			foreach ($listName as $idname){
-				if($idname == $tendn)
-				{
-					$flag =false;
-					break;
-				}
-			}
-			if($flag){
-            	$u = new User(-1, $tendn, $mk, $hoTen, $email, $dob, 0);
-            	$u->insert();
-				Utils::RedirectTo("login.php?true=1");
-			}
-			else
-				{ ?>
-					<script> alert("Tên đăng nhập đã tồn tại!");</script>
-				<?php }
-
-        }
-?>
-    <!-- InstanceEndEditable -->
-<div class="list">
-  <div class="tl">HÃNG SẢN XUẤT</div>
-  <?php
-	require_once '/entities/categories.php';
-	require_once '/entities/classify.php';
-	require_once '/helper/Utils.php';
-	$categories = categories::loadAll();
-	for ($i = 0, $n = count($categories); $i < $n; $i++) 
-	{
-		$name = $categories[$i]->getCatName();
-		$id = $categories[$i]->getCatId();
-		?>
-  <a href="productsByCat.php?catId=<?php echo $id; ?>" class="listmenu"><?php echo $name; ?></a>
-  <?php
-     }
-     ?>
-  <div class="tl">PHÂN LOẠI</div>
-  <?php $classify = Classify::LoadClassify();
-   for($i =0, $n=count($classify);$i<$n;$i++)
-   {
-	   $cid = $classify[$i]->getCId();
-	   $cname = $classify[$i]->getCName();
-	?>
-  <a href="productsByCat.php?cId=<?php echo $cid; ?>" class="listmenu"><?php echo $cname; ?></a>
-  <?php } ?>
-</div>
-<div id="top">
-  <div class="search">
-    <form id="frSearch"  name="frSearch" method="post" action="">  
-      <input name="txtSearch" type="search" class="txtSearch" id="txtSearch" placeholder="Search">
-      <input type="submit" id="btnSearch" name="btnSearch" value ="Search" class="blueButton" >  </br>
-      <select name="selectHSX" id="selectHSX" >
-    	<option value="0">All</option>
-        <?php
-        for ($i = 0, $n = count($categories); $i < $n; $i++) 
-		{
-			$name = $categories[$i]->getCatName();
-			$id = $categories[$i]->getCatId(); ?>
-        	<option value="<?php echo $id; ?>"><?php echo $name; ?></option>
-  		<?php }?>
-      </select>
-      
-      <select name="selectLoai" id="selectLoai" >
-    	<option value="0">All</option>
-       <?php $classify = Classify::LoadClassify();
-   for($i =0, $n=count($classify);$i<$n;$i++)
-   {
-	   $cid = $classify[$i]->getCId();
-	   $cname = $classify[$i]->getCName();
-	?>
-        	<option value="<?php echo $cid; ?>"><?php echo $cname; ?></option>
-  		<?php }?>
-      </select>
-       
-       <select name="selectGia" id="selectGia" >
-    		<option value="100000000">All</option>
-        	<option value="10000000">< 10 triệu </option>
-            <option value="20000000">< 20 triệu </option>
-        	<option value="30000000">< 30 triệu </option>
-        	<option value="40000000">< 40 triệu </option>
-        	<option value="50000000">< 50 triệu </option>
-      </select>
-</form>
-
-
-    <?php 
-	if(isset($_POST["btnSearch"]))
-	{
-		$value = str_replace("'","",$_POST['txtSearch']);
-		$value = str_replace("  ","",$value);
-		$value = str_replace(" ","%",$value);
-
-		$url ="search.php?nsx=".$_POST['selectHSX']."&value=".$value."&loai=".$_POST['selectLoai']."&gia=".$_POST['selectGia'];
-		Utils::RedirectTo($url);
-	}
-	?>
-  </div>
-  <div class="userCommand">
-    <?php
-		require_once '/helper/Context.php';
-		require_once '/helper/CartProcessing.php';
-	if (!Context::isLogged()) {
-		?>
-    <a href="login.php" class="ucmd">Đăng nhập</a> <span style="float:left;">|</span> <a href="register.php" class="ucmd">Đăng ký</a>
-    <?php
-} else {
-    ?>
-    <a href="cart.php" class="ucmd"><?php echo CartProcessing::countQuantity();?> Sản phẩm</a> <span style="float:left;">|</span> <a href="profile.php" class="ucmd">Hi, <?php echo $_SESSION["CurrentUser"]; ?>!</a> <span style="float:left;">|</span> <a href="logout.php" class="ucmd">Thoát</a>
-    <?php
+// đặt hàng
+if (isset($_POST["txtMaSP"])) {
+	$masp = $_POST["txtMaSP"];
+	$solg = 1;
+	CartProcessing::addItem($masp, $solg);
 }
+
+$categories = categories::loadAll();
+
+
 ?>
-  </div>
-</div>
-<div id="main">
-  <div id="header">
-    <ul class="bxslider">
-      <?php for($i=1;$i<7;$i++) { ?>
-      <li><img src="imgs/banners/<?php echo $i?>.jpg"  alt=""/></li>
-      <?php }?>
-    </ul>
-  </div>
-  <div id="navigation">
-    <ul>
-      <li><a href="index.php" class="nav">TRANG CHỦ</a></li>
-      <li><a href="productsByCat.php" class="nav">SẢN PHẨM</a></li>
-      <li><a href="#" class="nav">LIÊN HỆ</a></li>
-      <li><a href="#" class="nav">THÔNG TIN</a></li>
-    </ul>
-  </div>
-  <hr class="hrm"/>
-  <div id="body">
-    <div class="info_address"> </div>
-    <!-- InstanceBeginEditable name="EditRegion3" -->
-        <div class="main_body">
-        <form id="fr" name "fr" method="post" action="" onsubmit="return KTraDK();">
-<h1 align="center">ĐĂNG KÝ TÀI KHOẢN</h1><br/>
-      <table width="362" cellpadding="2" cellspacing="0" id="tableDangKy" style="margin-left: 200px;">
-            <tr>
-          <td colspan="4" class="title">Thông tin đăng nhập</td>
-        </tr>
-            <tr>
-          <td width="5">&nbsp;</td>
-          <td width="122">&nbsp;</td>
-          <td width="204">&nbsp;</td>
-          <td width="13">&nbsp;</td>
-        </tr>
-            <tr>
-          <td>&nbsp;</td>
-          <td >Tên đăng nhập:</td>
-          <td><input type="text" name="txtTenDN" id="txtTenDN" /> </td>
-          <td style="text-align: center; color: #FF0000;"> *</td>
-        </tr>
-            <tr>
-          <td>&nbsp;</td>
-          <td>Mật khẩu:</td>
-          <td><input type="password" name="txtMK" id="txtMK" /></td>
-          <td style="text-align: center; color: #FF0000;">*</td>
-        </tr>
-            <tr>
-          <td>&nbsp;</td>
-          <td>Nhập lại:</td>
-          <td><input type="password" name="txtNLMK" id="txtNLMK" /></td>
-          <td style="text-align: center; color: #FF0000;">*</td>
-        </tr>
-            <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td style="text-align: center">&nbsp;</td>
-        </tr>
-            <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td><img src="captcha/captcha.php" id="imgCaptcha" style="cursor: pointer;" onclick="changeCaptcha()" /></td>
-          <td style="text-align: center">&nbsp;</td>
-        </tr>
-            <tr>
-          <td>&nbsp;</td>
-          <td>Mã xác nhận:</td>
-          <td><input type="text" name="captcha-form" id="captcha-form" autocomplete="off" />
-</td>
-          <td style="text-align: center; color: #FF0000;">*</td>
-        </tr>
-            <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td style="text-align: center">&nbsp;</td>
-        </tr>
-            <tr>
-          <td colspan="4" class="title">Thông tin cá nhân</td>
-        </tr>
-            <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td style="text-align: center">&nbsp;</td>
-        </tr>
-            <tr>
-          <td>&nbsp;</td>
-          <td>Họ tên:</td>
-          <td><input type="text" name="txtHoTen" id="txtHoTen" /></td>
-          <td style="text-align: center">&nbsp;</td>
-        </tr>
-            <tr>
-          <td>&nbsp;</td>
-          <td>Email:</td>
-          <td><input type="text" name="txtEmail" id="txtEmail" /></td>
-          <td style="text-align: center; color: #FF0000;">*</td>
-        </tr>
-            <tr>
-          <td>&nbsp;</td>
-          <td>Ngày sinh:</td>
-          <td><input type="text" name="txtNgaySinh" id="txtNgaySinh" /></td>
-          <td style="text-align: center">&nbsp;</td>
-        </tr>
-            <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td style="text-align: center">&nbsp;</td>
-        </tr>
-            <tr>
-          <td>&nbsp;</td>
-          <td>&nbsp;</td>
-          <td><input name="btnDangKy" type="submit" class="blueButton" id="btnDangKy" value="Đăng ký" /></td>
-          <td style="text-align: center">&nbsp;</td>
-        </tr>
-            <tr>
-          <td>&nbsp;</td>
-          <td colspan="3">&nbsp;</td>
-        </tr>
-          </table>
-          </form>
-    </div>
-  <!-- InstanceEndEditable --> </div>
-  <div id="footer">Content for  class "footer" Goes Here</div>
-</div>
-</body>
-<!-- InstanceEnd --></html>
+
+<?php
+    require_once '/entities/User.php';
+
+    if (isset($_POST["btnDangKy"])) {
+        $tendn = $_POST["txtTenDN"];
+        $mk = $_POST["txtMK"];
+        $hoTen = $_POST["txtHoTen"];
+        $email = $_POST["txtEmail"];
+        $ngaySinh = $_POST["txtNgaySinh"]; // 28/11/2014
+        
+        $dob = strtotime(str_replace('/', '-', $ngaySinh)); //d-m-Y
+
+        $listName = User::loadUserName();
+        
+        $flag = true;
+        
+        foreach ($listName as $idname){
+            if($idname == $tendn)
+            {
+                $flag =false;
+                break;
+            }
+        }
+        if($flag){
+            $u = new User(-1, $tendn, $mk, $hoTen, $email, $dob, 0);
+            $u->insert();
+            Utils::RedirectTo("login.php?true=1");
+        }
+        else
+            { ?>
+                <script> alert("Tên đăng nhập đã tồn tại!");</script>
+            <?php }
+
+    }
+?>
+
+<!DOCTYPE html>
+<html>
+	<head>
+		<title> Taka Graden - Đăng ký tài khoản </title>
+		<meta charset="UTF-8">
+		<meta name="keywords" content="html,htm5,web">
+		<meta name="description" content="Do an web, home, trang chu">
+		<link href="img/logog.png" rel="shourtcut icon" />
+		
+		<!-- Style CSS -->
+		<link rel="stylesheet" href="css/bootstrap.min.css">
+		<link rel="stylesheet" href="css/style.css">
+        <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+		
+	</head>
+	<body class="main">
+		<!-- Header -->
+		<header class="header">
+			<div class="header-top">
+            	<div class="container">
+					<div class="top-header">
+						<div class="row">
+							<div class="col-md-6 col-sm-6 col-xs-6">
+								<ul class="topbar-left">
+									<li><i class="fa fa-phone" aria-hidden="true"></i><a href="tel:01202582956">Hotline: 01202582956</a></li>
+									<li class="hidden-xs"><i class="fa fa-facebook-square" aria-hidden="true"></i> <a target="_blank" href="https://www.facebook.com/takagarden/">www.facebook.com/takagarden</a></li>
+								</ul>
+							</div>
+							
+							<div class="col-md-6 col-sm-6 col-xs-6">
+								<ul class="topbar-right">
+								<?php
+											
+									if (!Context::isLogged()) {
+									?>
+									<li><i class="fa fa-user" aria-hidden="true"></i><a href="login.php">Đăng nhập</a></li>
+									<li style="margin-right: 0;"><i class="fa fa-lock" aria-hidden="true"></i><a href="register.php">Đăng ký</a></li>
+									<!-- <a href="login.php" class="ucmd">Đăng nhập</a> <span style="float:left;">|</span> <a href="register.php" class="ucmd">Đăng ký</a> -->
+									<?php
+									} else {
+										?>
+										<li><i class="fa fa-user" aria-hidden="true"></i><a href="cart.php">Giỏ hàng</a></li>
+										<li><i class="fa fa-user" aria-hidden="true"></i><a href="profile.php">Chào,  <?php echo $_SESSION["CurrentUser"]; ?>!</a></li>
+										<li><i class="fa fa-user" aria-hidden="true"></i><a href="logout.php">Thoát</a></li>
+										<!-- <a href="cart.php" class="ucmd"><?php echo CartProcessing::countQuantity();?> Sản phẩm</a> <span style="float:left;">|</span> <a href="profile.php" class="ucmd">Hi, <?php echo $_SESSION["CurrentUser"]; ?>!</a> <span style="float:left;">|</span> <a href="logout.php" class="ucmd">Thoát</a> -->
+										<?php
+									}
+									?>
+									
+								</ul>
+							</div>
+						</div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-logo">
+            	<div class="container">
+                    <div class="row">
+                        <div class="col-md-4 col-sm-5">
+                            <div class="logo"><a href="home.html"><abbr title="Logo"><img src="img/logo-small.png" /></abbr></a> </div>
+                        </div>
+                        <div class="col-md-4 col-sm-4">
+                            <div class="search">
+                                <form class="search-form" action="#" method="get">
+                                    <input class="s-input" type="text" placeholder="Tìm kiếm sản phẩm..." />
+                                    <button class="btn-search" type="submit">
+                                    	<span>Tìm kiếm</span>
+                                    </button>
+                                </form>
+                            </div>
+                        </div>
+                        <div class="col-md-4 col-sm-3 hidden-xs">
+                            <div class="box-cart">
+                            	<ul>
+                                	<li><a href="#"><i class="fa fa-heart-o" aria-hidden="true"></i>Yêu thích</a></li>
+                                    <li><a href="#"><i class="fa fa-shopping-cart" aria-hidden="true"></i>Giỏ hàng</a></li>
+                                </ul>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="header-menu hidden-xs">
+                <div class="container">
+                    <nav class="main-navigation">
+                        <ul>
+                            <li>
+                                <a href="index.php">
+                                    <span class="nav-caption">Trang chủ</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="index.php">
+                                    <span class="nav-caption">Giới thiệu</span>
+                                </a>
+                            </li>
+                            <li class="submenu">
+                                <a href="category.html" id="idMenu">
+                                    <span class="nav-caption">Sản phẩm</span>
+                                </a>
+                                <ul class="sub_menu" >
+                                    
+                                    <?php
+                                        for ($i = 0, $n = count($categories); $i < $n; $i++) 
+                                        {
+                                            $name = $categories[$i]->getCatName();
+                                            $id = $categories[$i]->getCatId();
+                                    ?>
+                                    <li><a href="productsByCat.php?catId=<?php echo $id; ?>"><?php echo $name; ?></a></li>
+                                    <?php
+                                    }
+                                    ?>
+                                </ul>
+                            </li>
+                            <li>
+                                <a href="blog.html">
+                                    <span class="nav-caption">Tin tức</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="blog.html">
+                                    <span class="nav-caption">Khuyến mãi</span>
+                                </a>
+                            </li>
+                            <li>
+                                <a href="contact.html">
+                                    <span class="nav-caption">Liên hệ</span>
+                                </a>
+                            </li>
+                        </ul>		
+                    </nav>
+                </div>
+             </div>
+		</header>
+		<!-- /Header -->
+		
+		<!-- Content -->
+		<div class="content">
+        	<div class="content-top">
+                <div class="container">
+                    <div class="row">
+                        <div class="sidebar col-md-3 col-sm-3 col-xs-12">
+                        	<div class="side-box-heading">
+                            	<i class="fa fa-folder-open-o" aria-hidden="true"></i>
+                            	<h4>Danh mục sản phẩm</h4>
+                            </div>
+                            <div class="side-box-content">
+                            	<ul>
+                                <?php
+                            
+                                    for ($i = 0, $n = count($categories); $i < $n; $i++) 
+                                    {
+                                        $name = $categories[$i]->getCatName();
+                                        $id = $categories[$i]->getCatId();
+                                ?>
+                                <li><a href="productsByCat.php?catId=<?php echo $id; ?>"><?php echo $name; ?></a></li>
+                                <?php
+                                    }
+                                    ?>
+									<li><a href="category.html">Sản phẩm bán chạy</a></li>
+									<li><a href="category.html">Sản phẩm nổi bật</a></li>
+									<li><a class="purple" href="category.html">Tất cả sản phẩm</a></li>
+								</ul>
+                            </div>
+                        </div>
+                        <div class="slider col-md-9 col-sm-9 hidden-xs">
+						  <div class="slideshow">
+							  <img src="img/slider/slider_1.jpg" />
+							  <img src="img/slider/slider_2.jpg" />
+							  <img src="img/slider/slider_3.jpg" />
+							</div>
+                    	</div>
+                    </div>
+                </div>
+            </div>
+			<div class="content-service">
+				<div class="container">
+                    <div class="row">
+						 <div class="col-md-4 col-sm-4 col-xs-12">
+							<div class="item_service">
+								<div class="img_service">
+									<img src="img/service/service1.png" alt="Giao hàng trong 24h">
+								</div>
+								<div class="content_service">
+									<p>Giao hàng trong 24h</p>
+									<span>Miễn phí giao hàng đơn hàng trên 500k</span>
+								</div>
+							</div>
+						 </div>
+						 <div class="col-md-4 col-sm-4 col-xs-12">
+							<div class="item_service">
+								<div class="img_service">
+									<img src="img/service/service2.png" alt="Sản phẩm 100% chính hãng">
+								</div>
+								<div class="content_service">
+									<p>Khuyến mãi cửa hàng</p>
+									<span>Trị giá đơn hàng trên 1.000.000đ </span>
+								</div>
+							</div>
+						 </div>
+						 <div class="col-md-4 col-sm-4 col-xs-12">
+							<div class="item_service">
+								<div class="img_service">
+									<img src="img/service/service3.png" alt="Đặt hàng nhanh chóng" title="Đặt hàng nhanh chóng">
+								</div>
+								<div class="content_service">
+									<p>Đặt hàng nhanh chóng</p>
+									<span>Gọi ngay:
+										<a href="tel:01202582956">
+											01202582956
+										</a>
+										&nbsp;để đặt hàng
+									</span>
+								</div>
+							</div>
+						 </div>
+					</div>
+				</div>
+			</div>
+			
+			<div class="content-product senda">
+
+				<div class="container">
+                    <div class="row">
+						 <div class="col-md-12 col-sm-12 col-xs-12">
+                            <div class="main_body">
+                                <form id="fr" name="fr" method="post" action="" onsubmit="return KTraDK();">
+                                <h1 align="center">ĐĂNG KÝ TÀI KHOẢN</h1><br/>
+                                <table width="362" cellpadding="2" cellspacing="0" id="tableDangKy" style="margin-left: 200px;">
+                                        <tr>
+                                    <!-- <td colspan="4" class="title">Thông tin đăng nhập</td> -->
+                                    </tr>
+                                        <tr>
+                                    <td width="5">&nbsp;</td>
+                                    <td width="122">&nbsp;</td>
+                                    <td width="204">&nbsp;</td>
+                                    <td width="13">&nbsp;</td>
+                                    </tr>
+                                        <tr>
+                                    <td>&nbsp;</td>
+                                    <td >Tên đăng nhập:</td>
+                                    <td><input type="text" name="txtTenDN" id="txtTenDN" /> </td>
+                                    <td style="text-align: center; color: #FF0000;"> *</td>
+                                    </tr>
+                                        <tr>
+                                    <td>&nbsp;</td>
+                                    <td>Mật khẩu:</td>
+                                    <td><input type="password" name="txtMK" id="txtMK" /></td>
+                                    <td style="text-align: center; color: #FF0000;">*</td>
+                                    </tr>
+                                        <tr>
+                                    <td>&nbsp;</td>
+                                    <td>Nhập lại:</td>
+                                    <td><input type="password" name="txtNLMK" id="txtNLMK" /></td>
+                                    <td style="text-align: center; color: #FF0000;">*</td>
+                                    </tr>
+                                        <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td style="text-align: center">&nbsp;</td>
+                                    </tr>
+                                        <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td><img src="captcha/captcha.php" id="imgCaptcha" style="cursor: pointer;" onclick="changeCaptcha()" /></td>
+                                    <td style="text-align: center">&nbsp;</td>
+                                    </tr>
+                                        <tr>
+                                    <td>&nbsp;</td>
+                                    <td>Mã xác nhận:</td>
+                                    <td><input type="text" name="captcha-form" id="captcha-form" autocomplete="off" />
+                            </td>
+                                    <td style="text-align: center; color: #FF0000;">*</td>
+                                    </tr>
+                                        <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td style="text-align: center">&nbsp;</td>
+                                    </tr>
+                                        <tr>
+                                    <td colspan="4" class="title">Thông tin cá nhân</td>
+                                    </tr>
+                                        <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td style="text-align: center">&nbsp;</td>
+                                    </tr>
+                                        <tr>
+                                    <td>&nbsp;</td>
+                                    <td>Họ tên:</td>
+                                    <td><input type="text" name="txtHoTen" id="txtHoTen" /></td>
+                                    <td style="text-align: center">&nbsp;</td>
+                                    </tr>
+                                        <tr>
+                                    <td>&nbsp;</td>
+                                    <td>Email:</td>
+                                    <td><input type="text" name="txtEmail" id="txtEmail" /></td>
+                                    <td style="text-align: center; color: #FF0000;">*</td>
+                                    </tr>
+                                        <tr>
+                                    <td>&nbsp;</td>
+                                    <td>Ngày sinh:</td>
+                                    <td><input type="text" name="txtNgaySinh" id="txtNgaySinh" /></td>
+                                    <td style="text-align: center">&nbsp;</td>
+                                    </tr>
+                                        <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td style="text-align: center">&nbsp;</td>
+                                    </tr>
+                                        <tr>
+                                    <td>&nbsp;</td>
+                                    <td>&nbsp;</td>
+                                    <td><input name="btnDangKy" type="submit" class="btn blueButton" id="btnDangKy" value="Đăng ký" /></td>
+                                    <td style="text-align: center">&nbsp;</td>
+                                    </tr>
+                                        <tr>
+                                    <td>&nbsp;</td>
+                                    <td colspan="3">&nbsp;</td>
+                                    </tr>
+                                    </table>
+                                </form>
+                            </div>
+						 </div>
+					</div>
+				</div>
+			</div>
+			
+		</div>
+		<!-- /Content -->
+		
+        <!-- Footer -->
+        <footer id="footer" class="container">
+			<div id="main-footer">
+				<div class="row">
+					<!-- Contact Us -->
+					<div class="col-lg-3 col-md-4 col-sm-6 contact-footer-info">
+						<h4><i class="fa fa-pagelines" aria-hidden="true"></i>Về chúng tôi</h4>
+						<ul class="list-menu info">
+							<li><i class="fa fa-map-marker" aria-hidden="true"></i>371 Nguyễn Kiệm, TP.HCM</li>
+							<li><i class="fa fa-phone" aria-hidden="true"></i>01202582956</li>
+							<li><i class="fa fa-envelope-o" aria-hidden="true"></i>takagraden@gmail.com</li>
+							<li><i class="fa fa-skype" aria-hidden="true"></i>takagraden</li>
+						</ul>
+					</div>
+					<!-- /Contact Us -->
+					
+					<!-- Information -->
+					<div class="col-lg-3 col-md-2 col-sm-6">
+						<h4><i class="fa fa-pagelines" aria-hidden="true"></i>Tài khoản</h4>
+						<ul class="list-menu">
+							<li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> Đơn hàng </a></li>
+							<li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> Sản phẩm yêu thích</a></li>
+							<li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> Đăng nhập tài khoản</a></li>
+							<li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> Tìm kiếm sản phẩm</a></li>
+						</ul>
+					</div>
+					<!-- /Information -->
+					
+					
+					<div class="col-lg-3 col-md-3 col-sm-6">
+						<h4><i class="fa fa-pagelines" aria-hidden="true"></i>Hỗ trợ khách hàng</h4>
+						<ul class="list-menu">
+							<li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> Hướng dẫn đặt hàng</a></li>
+							<li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> Hướng dẫn thanh toán</a></li>
+							<li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> Chính sách vận chuyển</a></li>
+							<li><a href="#"><i class="fa fa-caret-right" aria-hidden="true"></i> Chính sách đổi trả</a></li>
+						</ul>
+					</div>
+					
+					<!-- Like us on Social -->
+					<div class="col-lg-3 col-md-3 col-sm-6 facebook-iframe">
+						<h4><i class="fa fa-pagelines" aria-hidden="true"></i>Hình thức thanh toán</h4>
+						<ul class="list-menu">
+							<img src="img/payment.png"/>
+						</ul>
+						<h4><i class="fa fa-pagelines" aria-hidden="true"></i>Mạng xã hội</h4>
+						<ul class="footer-social">
+							<li class="fb">
+								<a href="#" target="_blank">
+									<i class="fa fa-facebook" aria-hidden="true"></i>
+								</a>
+							</li>
+							<li class="tt">
+								<a href="#" target="_blank">
+									<i class="fa fa-twitter" aria-hidden="true"></i>
+								</a>
+							</li>
+							<li class="ins">
+								<a href="#" target="_blank">
+									<i class="fa fa-instagram" aria-hidden="true"></i>
+								</a>
+							</li>
+							<li class="yt">
+								<a href="#" target="_blank">
+									<i class="fa fa-youtube" aria-hidden="true"></i>
+								</a>
+							</li>
+							<li class="gp">
+								<a href="#" target="_blank">
+									<i class="fa fa-google-plus" aria-hidden="true"></i>
+								</a>
+							</li>
+						</ul>
+					</div>
+					<!-- /Like us on Social -->
+					
+				</div>
+						
+			</div>
+			<div id="copyright">&copy; Bản quyền thuộc về <b>Taka Graden</b></div>
+        </footer>
+		<!-- /Footer -->
+        
+        <!-- Backtotop -->
+        <div class="back-to-top"><i class="fa fa-angle-up" aria-hidden="true"></i></div>
+		<!-- /Backtotop -->
+            
+		<!-- Javascript -->
+		<script src="js/bootstrap.min.js"></script>
+        <script src="js/jquery-3.3.1.min.js"></script>
+        <script src="js/main-script.js"></script>
+        <script src="js/check.js"></script>
+	</body>
+</html>

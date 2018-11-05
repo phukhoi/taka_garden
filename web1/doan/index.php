@@ -9,6 +9,8 @@ require_once '/entities/classify.php';
 require_once '/helper/Utils.php';
 require_once '/entities/Products.php';
 require_once '/helper/CartProcessing.php';
+require_once '/helper/Context.php';
+
 // đặt hàng
 if (isset($_POST["txtMaSP"])) {
 	$masp = $_POST["txtMaSP"];
@@ -21,8 +23,13 @@ $categories = categories::loadAll();
 $listProduct1 = Products::loadProductsByCatId(1);
 $listProduct3 = Products::loadProductsByCatId(2);
 $listProduct2 = Products::loadProductsByCatId(3);
-// print_r($listProduct1);
 
+
+?>
+<?php
+	if (!isset($_SESSION['Cart'])) {
+		$_SESSION['Cart'] = array();
+	}
 ?>
 
 <!DOCTYPE html>
@@ -38,7 +45,6 @@ $listProduct2 = Products::loadProductsByCatId(3);
 		<link rel="stylesheet" href="css/bootstrap.min.css">
 		<link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
-		
 	</head>
 	<body class="main">
 		<!-- Header -->
@@ -56,8 +62,24 @@ $listProduct2 = Products::loadProductsByCatId(3);
 							
 							<div class="col-md-6 col-sm-6 col-xs-6">
 								<ul class="topbar-right">
-									<li><i class="fa fa-user" aria-hidden="true"></i><a href="#">Đăng nhập</a></li>
-									<li style="margin-right: 0;"><i class="fa fa-lock" aria-hidden="true"></i><a href="#">Đăng ký</a></li>
+								<?php
+											
+									if (!Context::isLogged()) {
+									?>
+									<li><i class="fa fa-user" aria-hidden="true"></i><a href="login.php">Đăng nhập</a></li>
+									<li style="margin-right: 0;"><i class="fa fa-lock" aria-hidden="true"></i><a href="register.php">Đăng ký</a></li>
+									<!-- <a href="login.php" class="ucmd">Đăng nhập</a> <span style="float:left;">|</span> <a href="register.php" class="ucmd">Đăng ký</a> -->
+									<?php
+									} else {
+										?>
+										<li><i class="fa fa-user" aria-hidden="true"></i><a href="cart.php"><?php echo CartProcessing::countQuantity();?> Sản phẩm</a></li>
+										<li><i class="fa fa-user" aria-hidden="true"></i><a href="profile.php">Chào,  <?php echo $_SESSION["CurrentUser"]; ?>!</a></li>
+										<li><i class="fa fa-user" aria-hidden="true"></i><a href="logout.php">Thoát</a></li>
+										<!-- <a href="cart.php" class="ucmd"><?php echo CartProcessing::countQuantity();?> Sản phẩm</a> <span style="float:left;">|</span> <a href="profile.php" class="ucmd">Hi, <?php echo $_SESSION["CurrentUser"]; ?>!</a> <span style="float:left;">|</span> <a href="logout.php" class="ucmd">Thoát</a> -->
+										<?php
+									}
+									?>
+									
 								</ul>
 							</div>
 						</div>
