@@ -122,7 +122,7 @@ $categories = categories::loadAll();
                                 </a>
                             </li>
                             <li class="submenu">
-                                <a href="category.html" id="idMenu">
+                                <a href="#" id="idMenu">
                                     <span class="nav-caption">Sản phẩm</span>
                                 </a>
                                 <ul class="sub_menu" >
@@ -184,9 +184,9 @@ $categories = categories::loadAll();
                                 <?php
                                     }
                                     ?>
-									<li><a href="category.html">Sản phẩm bán chạy</a></li>
-									<li><a href="category.html">Sản phẩm nổi bật</a></li>
-									<li><a class="purple" href="category.html">Tất cả sản phẩm</a></li>
+									<li><a href="#">Sản phẩm bán chạy</a></li>
+									<li><a href="#">Sản phẩm nổi bật</a></li>
+									<li><a class="purple" href="#">Tất cả sản phẩm</a></li>
 								</ul>
                             </div>
                         </div>
@@ -307,6 +307,11 @@ $categories = categories::loadAll();
 												<h5><a href="details.php?proID=<?php echo $pid;?>"><?php echo $list[$i]->getProName();?></a></h5>
 												<span class="price"><?php echo number_format($list[$i]->getPrice());?> VNĐ</span>
 											</div>
+											<?php if($_SESSION['IsLogin']) { ?>
+											<a href="#" onClick="putProID('<?php echo $pId; ?>')" class="lbutton">Đặt hàng</a>
+											<?php }  else { ?>
+											<a href="login.php" class="lbutton">Đặt hàng</a>
+											<?php }?>
 										</div>
 									</div>
 									<?php }}?>
@@ -336,7 +341,9 @@ $categories = categories::loadAll();
 					</div>
 				</div>
 			</div>
-			
+			<form id="form1" name="form1" method="post" action="">
+			<input type="hidden" id="txtMaSP" name="txtMaSP" />
+			</form>	
 		</div>
 		<!-- /Content -->
 		
@@ -431,5 +438,11 @@ $categories = categories::loadAll();
 		<script src="js/bootstrap.min.js"></script>
         <script src="js/jquery-3.3.1.min.js"></script>
         <script src="js/main-script.js"></script>
+		<script type="text/javascript">
+			function putProID(masp) {
+				$("#txtMaSP").val(masp);
+				document.form1.submit();
+			}
+		</script>
 	</body>
 </html>

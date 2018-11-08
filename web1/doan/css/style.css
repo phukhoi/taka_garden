@@ -1297,3 +1297,10 @@ td{
 input{
     border-radius: 5px;
 }
+.lbutton{
+    border: 1px solid #6f86d8;
+    background: #6f86d8;
+    color: #fff;
+    padding: 2px;
+    border-radius: 5px;
+}

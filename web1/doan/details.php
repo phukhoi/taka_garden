@@ -122,12 +122,12 @@ $relatedProduct  = Products::loadProductsByCatId($product->catId);
                                 </a>
                             </li>
                             <li>
-                                <a href="category.html">
+                                <a href="#">
                                     <span class="nav-caption">Giới thiệu</span>
                                 </a>
                             </li>
                             <li class="submenu">
-                                <a href="category.html" id="idMenu">
+                                <a href="#" id="idMenu">
                                     <span class="nav-caption">Sản phẩm</span>
                                 </a>
                                 <ul class="sub_menu" >
@@ -200,9 +200,9 @@ $relatedProduct  = Products::loadProductsByCatId($product->catId);
                                     <?php
                                     }
                                     ?>
-									<li><a href="category.html">Sản phẩm bán chạy</a></li>
-									<li><a href="category.html">Sản phẩm nổi bật</a></li>
-									<li><a class="purple" href="category.html">Tất cả sản phẩm</a></li>
+									<li><a href="#">Sản phẩm bán chạy</a></li>
+									<li><a href="#">Sản phẩm nổi bật</a></li>
+									<li><a class="purple" href="#">Tất cả sản phẩm</a></li>
 								</ul>
 							</div>
 						</div>

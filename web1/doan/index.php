@@ -32,6 +32,18 @@ $listProduct2 = Products::loadProductsByCatId(3);
 	}
 ?>
 
+<?php 
+if(isset($_POST["btnSearch"]))
+{
+	$value = str_replace("'","",$_POST['txtSearch']);
+	$value = str_replace("  ","",$value);
+	$value = str_replace(" ","%",$value);
+
+	$url ="search.php?nsx=".$_POST['selectHSX']."&value=".$value."&gia=".$_POST['selectGia'];
+	Utils::RedirectTo($url);
+}
+?>
+
 <!DOCTYPE html>
 <html>
 	<head>
@@ -94,11 +106,13 @@ $listProduct2 = Products::loadProductsByCatId(3);
                         </div>
                         <div class="col-md-4 col-sm-4">
                             <div class="search">
-                                <form class="search-form" action="#" method="get">
-                                    <input class="s-input" type="text" placeholder="Tìm kiếm sản phẩm..." />
-                                    <button class="btn-search" type="submit">
+                                <form id="frSearch" name="frSearch" class="search-form" action="" method="post">
+                                    <input class="s-input" name="txtSearch" type="text" id="txtSearch" placeholder="Tìm kiếm sản phẩm..." />
+                                    <button id="btnSearch" name="btnSearch" class="btn-search" type="submit">
                                     	<span>Tìm kiếm</span>
                                     </button>
+									<input name="selectHSX" type="text" value='0' class="hidden" id="selectHSX" >
+									<input name="selectGia" type="text" value='100000000' class="hidden" id="selectGia" >
                                 </form>
                             </div>
                         </div>
@@ -128,7 +142,7 @@ $listProduct2 = Products::loadProductsByCatId(3);
                                 </a>
                             </li>
                             <li class="submenu">
-                                <a href="category.html" id="idMenu">
+                                <a href="#" id="idMenu">
                                     <span class="nav-caption">Sản phẩm</span>
                                 </a>
                                 <ul class="sub_menu" >
@@ -190,9 +204,9 @@ $listProduct2 = Products::loadProductsByCatId(3);
                                 <?php
                                     }
                                     ?>
-									<li><a href="category.html">Sản phẩm bán chạy</a></li>
-									<li><a href="category.html">Sản phẩm nổi bật</a></li>
-									<li><a class="purple" href="category.html">Tất cả sản phẩm</a></li>
+									<li><a href="#">Sản phẩm bán chạy</a></li>
+									<li><a href="#">Sản phẩm nổi bật</a></li>
+									<li><a class="purple" href="#">Tất cả sản phẩm</a></li>
 								</ul>
                             </div>
                         </div>
@@ -273,8 +287,12 @@ $listProduct2 = Products::loadProductsByCatId(3);
 											<div class="item-info">
 												<h5><a href="details.php?proID=<?php echo $listProduct1[$i]->proId;?>"><?php echo $listProduct1[$i]->proName; ?></a></h5>
 												<span class="price"><?php echo number_format($listProduct1[$i]->getPrice());?> VNĐ</span>
-												<span class="price"><?php echo $listProduct1[$i]->proId ?></span>
 											</div>
+											<?php if($_SESSION['IsLogin']) { ?>
+											<a href="#" onClick="putProID('<?php echo $pId; ?>')" class="lbutton">Đặt hàng</a>
+											<?php }  else { ?>
+											<a href="login.php" class="lbutton">Đặt hàng</a>
+											<?php }?>
 										</div>
 									</div>
 									<?php }?>
@@ -307,8 +325,13 @@ $listProduct2 = Products::loadProductsByCatId(3);
 											<div class="item-info">
 											<h5><a href="details.php?proID=<?php echo $listProduct2[$i]->proId;?>"><?php echo $listProduct2[$i]->proName; ?></a></h5>
 												<span class="price"><?php echo number_format($listProduct2[$i]->getPrice());?> VNĐ</span>
-												<span class="price"><?php echo $listProduct2[$i]->proId ?></span>
 											</div>
+											<?php if($_SESSION['IsLogin']) { ?>
+											<a href="#" onClick="putProID('<?php echo $pId; ?>')" class="lbutton">Đặt hàng</a>
+											<?php }  else { ?>
+											<a href="login.php" class="lbutton">Đặt hàng</a>
+											<?php }?>
+
 										</div>
 									</div>
 									<?php }?>
@@ -340,8 +363,13 @@ $listProduct2 = Products::loadProductsByCatId(3);
 											<div class="item-info">
 											<h5><a href="details.php?proID=<?php echo $listProduct3[$i]->proId;?>"><?php echo $listProduct3[$i]->proName; ?></a></h5>
 												<span class="price"><?php echo number_format($listProduct3[$i]->getPrice());?> VNĐ</span>
-												<span class="price"><?php echo $listProduct3[$i]->proId ?></span>
 											</div>
+											<?php if($_SESSION['IsLogin']) { ?>
+											<a href="#" onClick="putProID('<?php echo $pId; ?>')" class="lbutton">Đặt hàng</a>
+											<?php }  else { ?>
+											<a href="login.php" class="lbutton">Đặt hàng</a>
+											<?php }?>
+
 										</div>
 									</div>
 									<?php }?>
@@ -432,7 +460,9 @@ $listProduct2 = Products::loadProductsByCatId(3);
 					<!-- /Like us on Social -->
 					
 				</div>
-						
+				<form id="form1" name="form1" method="post" action="">
+				<input type="hidden" id="txtMaSP" name="txtMaSP" />
+				</form>		
 			</div>
 			<div id="copyright">&copy; Bản quyền thuộc về <b>Taka Graden</b></div>
         </footer>
@@ -446,5 +476,11 @@ $listProduct2 = Products::loadProductsByCatId(3);
 		<script src="js/bootstrap.min.js"></script>
         <script src="js/jquery-3.3.1.min.js"></script>
         <script src="js/main-script.js"></script>
+		<script type="text/javascript">
+			function putProID(masp) {
+				$("#txtMaSP").val(masp);
+				document.form1.submit();
+			}
+		</script>
 	</body>
 </html>
