@@ -81,10 +81,12 @@ class Product {
         $this->catId = $catId;
     }
 
-    public static function loadProductsByCatId($p_catId) {
+    public static function loadProductsByCatId($p_catId, $price) {
         $ret = array();
-
-        $sql = "select * from products where CatID = $p_catId";
+        if( $price == 0 ){
+            $price = 9999999999999999;
+        }
+        $sql = "select * from products where CatID = $p_catId and Price <= $price";
         $list = DataProvider::execQuery($sql);
 
         while ($row = mysql_fetch_array($list)) {

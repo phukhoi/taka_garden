@@ -282,7 +282,7 @@ if(isset($_POST["btnSearch"]))
 
                                     $alllist = Search::SearchName($noidung,$nsx,$gia);
                                     $numberProduct = count($alllist);// số lượng sản phẩm load được
-                                                
+                                    
                                 if ($numberProduct == 0) {
                                     echo "Không có sản phẩm.";
                                 }else {
@@ -292,7 +292,7 @@ if(isset($_POST["btnSearch"]))
                                     if(isset($_GET["page"]))
                                         $curPage=$_GET["page"];		
                                     $offset = ($curPage-1)*$productPerPage;
-                                    $list = Search::SearchNameLimit($noidung,$nsx,$loai,$gia,$offset,$productPerPage);
+									$list = Search::SearchNameLimit($noidung,$nsx,$gia,$offset,$productPerPage);
                                     $numberPages= ceil($numberProduct/$productPerPage); // số lượng trang
                                     $n = count($list); //số lượng sản phẩm load lên
                                         
@@ -303,11 +303,11 @@ if(isset($_POST["btnSearch"]))
 										<div class="prod-item">
 											<div class="item-thumb">
                                             	<span class="label_news "><span class="bf_">Mới</span></span>
-												<img src="imgs/products/<?php echo $listProduct1[$i]->proId;;?>/1.jpg" alt="Product1">
+												<img src="imgs/products/<?php echo $list[$i]->proId;;?>/1.jpg" alt="Product1">
 											</div>
 											<div class="item-info">
-												<h5><a href="details.php?proID=<?php echo $listProduct1[$i]->proId;?>"><?php echo $listProduct1[$i]->proName; ?></a></h5>
-												<span class="price"><?php echo number_format($listProduct1[$i]->getPrice());?> VNĐ</span>
+												<h5><a href="details.php?proID=<?php echo $list[$i]->proId;?>"><?php echo $list[$i]->proName; ?></a></h5>
+												<span class="price"><?php echo number_format($list[$i]->getPrice());?> VNĐ</span>
 											</div>
 											<?php if($_SESSION['IsLogin']) { ?>
 											<a href="#" onClick="putProID('<?php echo $pId; ?>')" class="lbutton">Đặt hàng</a>

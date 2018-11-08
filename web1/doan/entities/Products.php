@@ -212,12 +212,15 @@ Class Products{
 	 }
 //phan trang san pham
 /*------------Load product co gioi han-------*/
-    public static function loadProductsLimit($p_catId,$offset,$productPerPage) {
-		$ret = array();
+    public static function loadProductsLimit($p_catId,$price,$offset,$productPerPage) {
+        $ret = array();
+        if($price == 0){
+            $price = 9999999999999999;
+        }
 		if($p_catId == -1)
 				$sql = "select * from products limit $offset,$productPerPage";
 		else
-	        $sql = "select * from products where CatId = $p_catId limit $offset,$productPerPage";
+	        $sql = "select * from products where CatId = $p_catId and Price <= $price limit $offset,$productPerPage";
         $list = DataProvider::execQuery($sql);
 
         while ($row = mysql_fetch_array($list)) {
