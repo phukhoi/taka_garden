@@ -21,6 +21,17 @@ $categories = categories::loadAll();
 		$_SESSION['Cart'] = array();
 	}
 ?>
+<?php 
+if(isset($_POST["btnSearch"]))
+{
+	$value = str_replace("'","",$_POST['txtSearch']);
+	$value = str_replace("  ","",$value);
+	$value = str_replace(" ","%",$value);
+
+	$url ="search.php?nsx=".$_POST['selectHSX']."&value=".$value."&gia=".$_POST['selectGia'];
+	Utils::RedirectTo($url);
+}
+?>
 <!-- InstanceBeginEditable name="EditRegion4" -->
 
         <?php
@@ -109,11 +120,13 @@ $categories = categories::loadAll();
                         </div>
                         <div class="col-md-4 col-sm-4">
                             <div class="search">
-                                <form class="search-form" action="#" method="get">
-                                    <input class="s-input" type="text" placeholder="Tìm kiếm sản phẩm..." />
-                                    <button class="btn-search" type="submit">
+                                <form id="frSearch" name="frSearch" class="search-form" action="" method="post">
+                                    <input class="s-input" name="txtSearch" type="text" id="txtSearch" placeholder="Tìm kiếm sản phẩm..." />
+                                    <button id="btnSearch" name="btnSearch" class="btn-search" type="submit">
                                     	<span>Tìm kiếm</span>
                                     </button>
+									<input name="selectHSX" type="text" value='0' class="hidden" id="selectHSX" >
+									<input name="selectGia" type="text" value='100000000' class="hidden" id="selectGia" >
                                 </form>
                             </div>
                         </div>

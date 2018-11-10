@@ -25,7 +25,17 @@ $categories = categories::loadAll();
 		$_SESSION['Cart'] = array();
 	}
 ?>
+<?php 
+if(isset($_POST["btnSearch"]))
+{
+	$value = str_replace("'","",$_POST['txtSearch']);
+	$value = str_replace("  ","",$value);
+	$value = str_replace(" ","%",$value);
 
+	$url ="search.php?nsx=".$_POST['selectHSX']."&value=".$value."&gia=".$_POST['selectGia'];
+	Utils::RedirectTo($url);
+}
+?>
 <!DOCTYPE html>
 <html>
 	<head>
@@ -39,6 +49,9 @@ $categories = categories::loadAll();
 		<link rel="stylesheet" href="css/bootstrap.min.css">
 		<link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
+		<!-- Latest compiled and minified CSS -->
+		<link rel="stylesheet" href="//netdna.bootstrapcdn.com/bootstrap/3.1.0/css/bootstrap.min.css">
+
 		
 	</head>
 	<body class="main">
@@ -88,11 +101,14 @@ $categories = categories::loadAll();
                         </div>
                         <div class="col-md-4 col-sm-4">
                             <div class="search">
-                                <form class="search-form" action="#" method="get">
-                                    <input class="s-input" type="text" placeholder="Tìm kiếm sản phẩm..." />
-                                    <button class="btn-search" type="submit">
+								<form id="frSearch" name="frSearch" class="search-form" action="" method="post">
+                                    <input class="s-input" name="txtSearch" type="text" id="txtSearch" placeholder="Tìm kiếm sản phẩm..." />
+                                    <button id="btnSearch" name="btnSearch" class="btn-search" type="submit">
                                     	<span>Tìm kiếm</span>
-                                    </button>
+									</button>
+									
+									<input name="selectHSX" type="text" value='0' class="hidden" id="selectHSX" >
+									<input name="selectGia" type="text" value='100000000' class="hidden" id="selectGia" >
                                 </form>
                             </div>
                         </div>
@@ -257,10 +273,15 @@ $categories = categories::loadAll();
 				
 				if(isset($_GET["catId"]))
 				{
+					if(isset($_GET['price'])){
+						$price = $_GET['price'];
+					}else{
+						$price = 100000000;
+					}
 					$p_catId = $_GET["catId"];
 					$categoryDetail = categories::getCategoryById($p_catId);
-					$alllist = Products::loadProductsByCatId($p_catId);
-					$list = Products::loadProductsLimit($p_catId,$offset,$productPerPage);
+					$alllist = Products::loadProductsByCatId($p_catId, $price);
+					$list = Products::loadProductsLimit($p_catId,$price,$offset,$productPerPage);
 					$flag=1;
 				}else
 					if(isset($_GET["cId"]))
@@ -281,6 +302,39 @@ $categories = categories::loadAll();
 				$n = count($list); //số lượng sản phẩm load lên
 				?>
 				<div class="container">
+					<div class="row">
+						<div class="col-md-10 col-md-offset-1 col-xs-12">
+							<!-- <div class="col-md-6 col-xs-12">
+								<select class="form-control" name="selectHSXForm" id="selectHSXForm" >
+									<option value="0">Lọc theo loại sản phẩm</option>
+									<?php
+									for ($i = 0; $i < count($categories); $i++) 
+									{
+										$name = $categories[$i]->getCatName();
+										$id = $categories[$i]->getCatId(); ?>
+										<option value="<?php echo $id; ?>"><?php echo $name; ?></option>
+									<?php }?>
+								</select>
+							</div> -->
+							<div class="col-md-6 col-xs-12">
+								<?php 
+									if(isset($_GET['price'])){
+										$price = $_GET['price'];
+									}else{
+										$price = 0;
+									}
+								?>
+								<select class="form-control" name="selectGiaForm" id="selectGiaForm" >
+									<option value="0" <?php echo $price == 0 ? 'selected':'' ?> >Lọc theo giá</option>
+									<option value="10000000" <?php echo $price == 10000000 ? 'selected':'' ?> >< 10 triệu </option>
+									<option value="20000000" <?php echo $price == 20000000 ? 'selected':'' ?> >< 20 triệu </option>
+									<option value="30000000" <?php echo $price == 30000000 ? 'selected':'' ?> >< 30 triệu </option>
+									<option value="40000000" <?php echo $price == 40000000 ? 'selected':'' ?> >< 40 triệu </option>
+									<option value="50000000" <?php echo $price == 50000000 ? 'selected':'' ?> >< 50 triệu </option>
+								</select>
+							</div>
+						</div>
+					</div>
                     <div class="row">
 						 <div class="col-md-12 col-sm-12 col-xs-12">
 							<div class="prod-title">
@@ -294,6 +348,7 @@ $categories = categories::loadAll();
 										echo "Không có sản phẩm.";
 									} 
 									else {
+										
 										for ($i = 0; $i < $n; $i++) {
 											$pid=$list[$i]->getProId();
 											?>

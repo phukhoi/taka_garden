@@ -12,7 +12,8 @@ class Search{
 		$ret = array();
 		$sql = "select * from products 
 				where catid like '$nsx' and price < $gia and ProName like '%$noidung%'
-				ORDER BY price DESC";
+                ORDER BY price DESC";
+                
         $list = DataProvider::execQuery($sql);
 
         while ($row = mysql_fetch_array($list)) {
@@ -33,7 +34,7 @@ class Search{
 
         return $ret;
     }
-	public static function SearchNameLimit($noidung,$nsx,$loai,$gia,$offset,$productPerPage)
+	public static function SearchNameLimit($noidung,$nsx,$gia,$offset,$productPerPage)
 	{
 		if($nsx ==0 )
 			$nsx = '%';
@@ -41,7 +42,7 @@ class Search{
 			$loai = '%';
 		$ret = array();
 		$sql = "select * from products 
-				where catid like '$nsx' and Classify like '$loai' and price < $gia and proname like '%$noidung%'
+				where catid like '$nsx' and price < $gia and proname like '%$noidung%'
 				ORDER BY price DESC limit $offset,$productPerPage";
         $list = DataProvider::execQuery($sql);
 
