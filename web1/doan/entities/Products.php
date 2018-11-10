@@ -5,114 +5,148 @@
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
-Class Products{
-    var $proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId,$view, $dayAdd,$classify;
-	function __construct($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd,$classify) {
-		$this->proId = $proId;
-		$this->proName = $proName;
-		$this->tinyDes = $tinyDes;
-		$this->fullDes = $fullDes;
-		$this->price = $price;
-		$this->quantity = $quantity;
-		$this->catId = $catId;
-		$this->view = $view;
-		$this->dayAdd = $dayAdd;
-		$this->classify = $classify;
-	}
-    public function getProId() {
+require '../helper/DataProvider.php';
+
+Class Products
+{
+    var $proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify;
+
+    function __construct($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify)
+    {
+        $this->proId = $proId;
+        $this->proName = $proName;
+        $this->tinyDes = $tinyDes;
+        $this->fullDes = $fullDes;
+        $this->price = $price;
+        $this->quantity = $quantity;
+        $this->catId = $catId;
+        $this->view = $view;
+        $this->dayAdd = $dayAdd;
+        $this->classify = $classify;
+    }
+
+    public function getProId()
+    {
         return $this->proId;
     }
 
-    public function getProName() {
+    public function getProName()
+    {
         return $this->proName;
     }
 
-    public function getTinyDes() {
+    public function getTinyDes()
+    {
         return $this->tinyDes;
     }
 
-    public function getFullDes() {
+    public function getFullDes()
+    {
         return $this->fullDes;
     }
 
-    public function getPrice() {
+    public function getPrice()
+    {
         return $this->price;
     }
 
-    public function getQuantity() {
+    public function getQuantity()
+    {
         return $this->quantity;
     }
 
-    public function getCatId() {
+    public function getCatId()
+    {
         return $this->catId;
     }
-	
-    public function getView() {
+
+    public function getView()
+    {
         return $this->view;
     }
-    public function getDayAdd() {
+
+    public function getDayAdd()
+    {
         return $this->dayAdd;
     }
-	 public function getClassify() {
+
+    public function getClassify()
+    {
         return $this->classify;
     }
-	public function setClassify($classify) {
-		$this->Classify = $classify;
+
+    public function setClassify($classify)
+    {
+        $this->Classify = $classify;
     }
-	public function setView($proId) {
-		$this->view = $view;
+
+    public function setView($proId)
+    {
+        $this->view = $view;
     }
-    public function setDayAdd($proId) {
+
+    public function setDayAdd($proId)
+    {
         $this->dayAdd = $dayAdd;
     }
 
-    public function setProId($proId) {
+    public function setProId($proId)
+    {
         $this->proId = $proId;
     }
 
-    public function setProName($proName) {
+    public function setProName($proName)
+    {
         $this->proName = $proName;
     }
 
-    public function setTinyDes($tinyDes) {
+    public function setTinyDes($tinyDes)
+    {
         $this->tinyDes = $tinyDes;
     }
 
-    public function setFullDes($fullDes) {
+    public function setFullDes($fullDes)
+    {
         $this->fullDes = $fullDes;
     }
 
-    public function setPrice($price) {
+    public function setPrice($price)
+    {
         $this->price = $price;
     }
 
-    public function setQuantity($quantity) {
+    public function setQuantity($quantity)
+    {
         $this->quantity = $quantity;
     }
 
-    public function setCatId($catId) {
+    public function setCatId($catId)
+    {
         $this->catId = $catId;
     }
-/*------------Load ALL-------*/
-	public static function loadProductsAll() {
+
+    /*------------Load ALL-------*/
+    public static function loadProductsAll()
+    {
+
         $ret = array();
-
         $sql = "select * from products";
-        $list = DataProvider::execQuery($sql);
+        $data = new DataProvider();
+        $list = $data::execQuery($sql);
 
-        while ($row = mysql_fetch_array($list)) {
+        while ($row = mysqli_fetch_assoc($list)) {
             $proId = $row["ProID"];
             $proName = $row["ProName"];
             $tinyDes = $row["TinyDes"];
             $fullDes = $row["FullDes"];
             $price = $row["Price"];
             $quantity = $row["Quantity"];
-			$view = $row["NView"];
+            $view = $row["NView"];
             $dayAdd = $row["DayAdd"];
             $catId = $row["CatID"];
-			$classify =$row["Classify"];
+            $classify = $row["Classify"];
 
-            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd,$classify);
+            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify);
             array_push($ret, $p);
         }
 
@@ -120,8 +154,9 @@ Class Products{
     }
 
 
-/* -----------------------load product theo NHA SAN XUAT--------------*/
-	public static function loadProductsByCatId($p_catId) {
+    /* -----------------------load product theo NHA SAN XUAT--------------*/
+    public static function loadProductsByCatId($p_catId)
+    {
         $ret = array();
 
         $sql = "select * from products where CatID = $p_catId";
@@ -134,20 +169,22 @@ Class Products{
             $fullDes = $row["FullDes"];
             $price = $row["Price"];
             $quantity = $row["Quantity"];
-			$view = $row["NView"];
+            $view = $row["NView"];
             $dayAdd = $row["DayAdd"];
             //$catId = $row["CatID"];
             $catId = $p_catId;
-			$classify =$row["Classify"];
+            $classify = $row["Classify"];
 
-            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd,$classify);
+            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify);
             array_push($ret, $p);
         }
 
         return $ret;
     }
-	/* -----------------------load product theo Loai Mat hang--------------*/
-	public static function loadProductsByCId($p_cId) {
+
+    /* -----------------------load product theo Loai Mat hang--------------*/
+    public static function loadProductsByCId($p_cId)
+    {
         $ret = array();
 
         $sql = "select * from products where Classify = $p_cId and Quantity >0";
@@ -160,22 +197,23 @@ Class Products{
             $fullDes = $row["FullDes"];
             $price = $row["Price"];
             $quantity = $row["Quantity"];
-			$view = $row["NView"];
+            $view = $row["NView"];
             $dayAdd = $row["DayAdd"];
             $catId = $row["CatID"];
             //$catId = $p_catId;
-			//$classify = $p_cId;
+            //$classify = $p_cId;
 
-            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd,$p_cId);
+            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $p_cId);
             array_push($ret, $p);
         }
 
         return $ret;
     }
 
-/* -----------------------load product theo id TUNG SAN PHAM va tang luot view--------------*/
+    /* -----------------------load product theo id TUNG SAN PHAM va tang luot view--------------*/
 
-    public static function loadProductByProId($p_proId) {
+    public static function loadProductByProId($p_proId)
+    {
         $sql = "select * from products where ProID = $p_proId";
         $list = DataProvider::execQuery($sql);
         if ($row = mysql_fetch_array($list)) {
@@ -188,36 +226,41 @@ Class Products{
             $price = $row["Price"];
             $quantity = $row["Quantity"];
             $catId = $row["CatID"];
-			$view = $row["NView"];
+            $view = $row["NView"];
             $dayAdd = $row["DayAdd"];
-			$classify =$row["Classify"];
+            $classify = $row["Classify"];
 
-            $p = new Products($p_proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd,$classify);
+            $p = new Products($p_proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify);
             return $p;
         }
 
         return NULL;
     }
-/*------------cap nhat so luot xem-------*/
 
-	 public static function AddView($p_proId){
-		$sql ="update products set nview= nview+1 where ProID = $p_proId";
-		DataProvider::execQuery($sql);
-	 }
-	 /*------------cap nhat so luot xem-------*/
+    /*------------cap nhat so luot xem-------*/
 
-	 public static function UpdateQuantity($p_proId,$sl){
-		$sql ="update products set Quantity= Quantity-$sl where ProID = $p_proId";
-		DataProvider::execQuery($sql);
-	 }
+    public static function AddView($p_proId)
+    {
+        $sql = "update products set nview= nview+1 where ProID = $p_proId";
+        DataProvider::execQuery($sql);
+    }
+
+    /*------------cap nhat so luot xem-------*/
+
+    public static function UpdateQuantity($p_proId, $sl)
+    {
+        $sql = "update products set Quantity= Quantity-$sl where ProID = $p_proId";
+        DataProvider::execQuery($sql);
+    }
 //phan trang san pham
-/*------------Load product co gioi han-------*/
-    public static function loadProductsLimit($p_catId,$offset,$productPerPage) {
-		$ret = array();
-		if($p_catId == -1)
-				$sql = "select * from products limit $offset,$productPerPage";
-		else
-	        $sql = "select * from products where CatId = $p_catId limit $offset,$productPerPage";
+    /*------------Load product co gioi han-------*/
+    public static function loadProductsLimit($p_catId, $offset, $productPerPage)
+    {
+        $ret = array();
+        if ($p_catId == -1)
+            $sql = "select * from products limit $offset,$productPerPage";
+        else
+            $sql = "select * from products where CatId = $p_catId limit $offset,$productPerPage";
         $list = DataProvider::execQuery($sql);
 
         while ($row = mysql_fetch_array($list)) {
@@ -228,19 +271,21 @@ Class Products{
             $price = $row["Price"];
             $quantity = $row["Quantity"];
             $catId = $row["CatID"];
-			$view = $row["NView"];
+            $view = $row["NView"];
             $dayAdd = $row["DayAdd"];
-			$classify =$row["Classify"];
-			
-            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd,$classify);
+            $classify = $row["Classify"];
+
+            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify);
             array_push($ret, $p);
         }
 
         return $ret;
     }
-/*------------Load product co gioi han theo loai sp-------*/
-    public static function loadProductsLimitClassify($p_cId,$offset,$productPerPage) {
-		$ret = array();
+
+    /*------------Load product co gioi han theo loai sp-------*/
+    public static function loadProductsLimitClassify($p_cId, $offset, $productPerPage)
+    {
+        $ret = array();
         $sql = "select * from products where Classify = $p_cId limit $offset,$productPerPage";
         $list = DataProvider::execQuery($sql);
 
@@ -252,19 +297,21 @@ Class Products{
             $price = $row["Price"];
             $quantity = $row["Quantity"];
             $catId = $row["CatID"];
-			$view = $row["NView"];
+            $view = $row["NView"];
             $dayAdd = $row["DayAdd"];
-			//$classify =$p_cId;
-			
-            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd,$p_cId);
+            //$classify =$p_cId;
+
+            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $p_cId);
             array_push($ret, $p);
         }
 
         return $ret;
     }
-/*------------Load product New ADD-------*/
-    public static function loadProductsNew() {
-		$ret = array();
+
+    /*------------Load product New ADD-------*/
+    public static function loadProductsNew()
+    {
+        $ret = array();
         $sql = "select * from products ORDER BY DayAdd DESC limit 0,10";
         $list = DataProvider::execQuery($sql);
 
@@ -278,17 +325,19 @@ Class Products{
             $catId = $row["CatID"];
             $view = $row["NView"];
             $dayAdd = $row["DayAdd"];
-			$classify =$row["Classify"];
-			
-            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd,$classify);
+            $classify = $row["Classify"];
+
+            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify);
             array_push($ret, $p);
         }
 
         return $ret;
     }
-/*------------Load product nhieu luot view-------*/
-    public static function loadProductsView() {
-		$ret = array();
+
+    /*------------Load product nhieu luot view-------*/
+    public static function loadProductsView()
+    {
+        $ret = array();
         $sql = "select * from products  ORDER BY NView DESC limit 0,10";
         $list = DataProvider::execQuery($sql);
 
@@ -302,18 +351,19 @@ Class Products{
             $catId = $row["CatID"];
             $view = $row["NView"];
             $dayAdd = $row["DayAdd"];
-			$classify =$row["Classify"];
-			
-            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd,$classify);
+            $classify = $row["Classify"];
+
+            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify);
             array_push($ret, $p);
         }
 
         return $ret;
     }
-	
-	/*------------Load product ban chay-------*/
-    public static function loadProductsTopSale() {
-		$ret = array();
+
+    /*------------Load product ban chay-------*/
+    public static function loadProductsTopSale()
+    {
+        $ret = array();
         $sql = "select p.ProID,p.ProName,p.Price, SUM(od.quantity) from products p,orderdetails od 
 				where p.ProID = od.ProId
 				GROUP BY p.ProID
@@ -330,18 +380,19 @@ Class Products{
             //$catId = $row["CatID"];
             //$view = $row["NView"];
             //$dayAdd = $row["DayAdd"];
-			//$classify =$row["Classify"];
-			
-            $p = new Products($proId, $proName, '', '', $price, '', '', '', '','');
+            //$classify =$row["Classify"];
+
+            $p = new Products($proId, $proName, '', '', $price, '', '', '', '', '');
             array_push($ret, $p);
         }
 
         return $ret;
     }
-	
-		/*------------Load product cung loai-------*/
-    public static function loadProductsCungLoai($loaisp,$pid) {
-		$ret = array();
+
+    /*------------Load product cung loai-------*/
+    public static function loadProductsCungLoai($loaisp, $pid)
+    {
+        $ret = array();
         $sql = "select ProID,ProName from products  
 				where ProID != $pid and classify = $loaisp
 				ORDER BY NView DESC limit 0,5";
@@ -357,18 +408,20 @@ Class Products{
             //$catId = $row["CatID"];
             //$view = $row["NView"];
             //$dayAdd = $row["DayAdd"];
-			//$classify =$row["Classify"];
-			
-            $p = new Products($proId, $proName, '', '', '', '', '', '', '','');
+            //$classify =$row["Classify"];
+
+            $p = new Products($proId, $proName, '', '', '', '', '', '', '', '');
             array_push($ret, $p);
         }
 
         return $ret;
     }
-		/*------------Load product cung nha sx-------*/
-    public static function loadProductsCungNSX($nsx,$pid) {
-		$ret = array();
-        $sql ="select ProID,ProName from products  
+
+    /*------------Load product cung nha sx-------*/
+    public static function loadProductsCungNSX($nsx, $pid)
+    {
+        $ret = array();
+        $sql = "select ProID,ProName from products  
 				where ProID != $pid and Catid = $nsx
 				ORDER BY Price DESC limit 0,5";
         $list = DataProvider::execQuery($sql);
@@ -383,9 +436,9 @@ Class Products{
             //$catId = $row["CatID"];
             //$view = $row["NView"];
             //$dayAdd = $row["DayAdd"];
-			//$classify =$row["Classify"];
-			
-            $p = new Products($proId, $proName, '', '', '', '', '', '', '','');
+            //$classify =$row["Classify"];
+
+            $p = new Products($proId, $proName, '', '', '', '', '', '', '', '');
             array_push($ret, $p);
         }
 
