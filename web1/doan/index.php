@@ -160,12 +160,12 @@ if(isset($_POST["btnSearch"]))
                                 </ul>
                             </li>
                             <li>
-                                <a href="blog.html">
+                                <a href="blog.php">
                                     <span class="nav-caption">Tin tức</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="blog.html">
+                                <a href="blog.php">
                                     <span class="nav-caption">Khuyến mãi</span>
                                 </a>
                             </li>

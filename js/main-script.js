@@ -110,6 +110,20 @@ $(document).ready(function() {
 	
 	/* END JS TABS*/
 	
+	$('#selectGiaForm').on('change', function(){
+		var value = $('#selectGiaForm').val();
+		$('#selectGia').val(value);
+		
+		const params = new URL(location.href).searchParams;
+		const catId = params.get('catId');	
+		
+		window.location.href = window.location.origin + window.location.pathname+'?catId='+catId+'&price='+value+'&page=1';
+	})
+	$('#selectHSXForm').on('change', function(){
+		var value = $('#selectHSXForm').val();
+		$('#selectHSX').val(value);
+		$('#btnSearch').trigger('click');
+	})
 });
 
 
