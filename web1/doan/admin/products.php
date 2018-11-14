@@ -133,9 +133,12 @@ font-size: 16px;"><a href="../index.php" class="btn btn-danger square-btn-adjust
                             <th>Price</th>
                             <th>Type</th>
                             <th>Quantity</th>
+                            <th></th>
                         </tr>
                         </thead>
-                        <?php for ($i = 0; $i < count($list); $i++) { ?>
+                        <?php for ($i = 0;
+                        $i < count($list);
+                        $i++) { ?>
                         <tbody>
                         <tr>
                             <td><?php echo $list[$i]->getProID(); ?></td>
@@ -143,6 +146,10 @@ font-size: 16px;"><a href="../index.php" class="btn btn-danger square-btn-adjust
                             <td> <?php echo number_format($list[$i]->getPrice()); ?></td>
                             <td><?php echo $list[$i]->getClassify(); ?></td>
                             <td> <?php echo $list[$i]->getQuantity(); ?></td>
+                            <td class="text-center">
+                                <a role="button" class="btn btn-success btn-xs"><i class="fa fa-fw fa-edit"></i></a>
+                                <a role="button" class="btn btn-danger btn-xs"><i class="fa fa-fw fa-trash-o"></i></a>
+                            </td>
                         </tr>
                         <?php } ?>
 

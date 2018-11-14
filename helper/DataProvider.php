@@ -14,44 +14,44 @@
 define("SERVER", "localhost");
 define("DB", "quanlymayanh");
 define("UID", "root");
-define("PWD", "");
+define("PWD", "root");
 
-class DataProvider {
+class DataProvider
+{
 
-    public static function execQuery($sql) {
-        $cn = mysql_connect(SERVER, UID, PWD) or
-                die("Không thể kết nối vào máy chủ");
+    public static function execQuery($sql)
+    {
+        $cn = mysqli_connect(SERVER, UID, PWD, DB) or die ('Không thể kết nối tới database');
 
-        mysql_select_db(DB, $cn);
-        mysql_query("set names 'utf8'");
+        $result = mysqli_query($cn, $sql);
+        if (!$result) {
+            die ('Câu truy vấn bị sai');
+        }
 
-        $kq = mysql_query($sql, $cn);
-        if (!$kq)
-            die("Lỗi truy vấn: " . mysql_error());
-
-        mysql_close($cn);
-        return $kq;
+        return $result;
     }
 
-    public static function execNonQueryAffectedRows($sql) {
-        $cn = mysql_connect(SERVER, UID, PWD) or
-                die("Không thể kết nối vào máy chủ");
+    public static function execNonQueryAffectedRows($sql)
+    {
+        $cn = mysqli_connect(SERVER, UID, PWD) or
+        die("Không thể kết nối vào máy chủ");
 
-        mysql_select_db(DB, $cn);
-        mysql_query("set names 'utf8'");
+        mysqli_select_db(DB, $cn);
+        mysqli_query("set names 'utf8'");
 
-        if (!mysql_query($sql, $cn))
+        if (!mysqli_query($sql, $cn))
             die("Lỗi truy vấn: " . mysql_error());
 
-        $affected_rows = mysql_affected_rows();
-        mysql_close($cn);
+        $affected_rows = mysqli_affected_rows();
+        mysqli_close($cn);
 
         return $affected_rows;
     }
 
-    public static function execNonQueryIdentity($sql) {
+    public static function execNonQueryIdentity($sql)
+    {
         $cn = mysql_connect(SERVER, UID, PWD) or
-                die("Không thể kết nối vào máy chủ");
+        die("Không thể kết nối vào máy chủ");
 
         mysql_select_db(DB, $cn);
         mysql_query("set names 'utf8'");
@@ -66,4 +66,5 @@ class DataProvider {
     }
 
 }
+
 ?>

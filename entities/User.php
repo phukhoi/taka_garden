@@ -1,8 +1,8 @@
 
 <?php
 
-require_once '/helper/DataProvider.php';
-
+//require_once '/helper/DataProvider.php';
+include '../helper/DataProvider.php';
 class User {
 
     var $id, $username, $password, $name, $email, $dob, $permission;

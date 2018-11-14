@@ -1,6 +1,6 @@
 <?php
 
-require_once '/entities/User.php';
+include '../entities/User.php';
 
 class Context {
 

@@ -1,15 +1,19 @@
 <?php
+ini_set('display_errors', 1);
+ini_set('display_startup_errors', 1);
+error_reporting(E_ALL);
+
 session_start();
 
 if (!isset($_SESSION["IsLogin"])) {
     $_SESSION["IsLogin"] = 0; // chưa đăng nhập
 }
-require_once '/entities/categories.php';
-require_once '/entities/classify.php';
-require_once '/helper/Utils.php';
-require_once '/entities/Products.php';
-require_once '/helper/CartProcessing.php';
-require_once '/helper/Context.php';
+require_once 'entities/categories.php';
+require_once 'entities/classify.php';
+require_once 'helper/Utils.php';
+require_once 'entities/Products.php';
+require_once 'helper/CartProcessing.php';
+require_once 'helper/Context.php';
 
 // đặt hàng
 if (isset($_POST["txtMaSP"])) {
