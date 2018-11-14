@@ -12,9 +12,9 @@
  * @author Zenit
  */
 define("SERVER", "localhost");
-define("DB", "quanlymayanh");
-define("UID", "root");
-define("PWD", "root");
+define("DB", "db_taka");
+define("UID", "user_cms");
+define("PWD", "MNyLxQBetNFNedrf");
 
 class DataProvider
 {
@@ -22,6 +22,7 @@ class DataProvider
     public static function execQuery($sql)
     {
         $cn = mysqli_connect(SERVER, UID, PWD, DB) or die ('Không thể kết nối tới database');
+        mysqli_set_charset($cn, 'UTF8');
 
         $result = mysqli_query($cn, $sql);
         if (!$result) {
@@ -35,7 +36,7 @@ class DataProvider
     {
         $cn = mysqli_connect(SERVER, UID, PWD) or
         die("Không thể kết nối vào máy chủ");
-
+        mysqli_set_charset($cn, 'UTF8');
         mysqli_select_db(DB, $cn);
         mysqli_query("set names 'utf8'");
 
@@ -52,15 +53,15 @@ class DataProvider
     {
         $cn = mysql_connect(SERVER, UID, PWD) or
         die("Không thể kết nối vào máy chủ");
+        mysqli_set_charset($cn, 'UTF8');
+        mysqli_select_db(DB, $cn);
+        mysqli_query("set names 'utf8'");
 
-        mysql_select_db(DB, $cn);
-        mysql_query("set names 'utf8'");
-
-        if (!mysql_query($sql, $cn))
+        if (!mysqli_query($sql, $cn))
             die("Lỗi truy vấn: " . mysql_error());
 
-        $id = mysql_insert_id();
-        mysql_close($cn);
+        $id = mysqli_insert_id();
+        mysqli_close($cn);
 
         return $id;
     }
