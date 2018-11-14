@@ -57,7 +57,7 @@ class categories
     {
         $ret = array();
         $sql = "select * from categories where CatId = $id ";
-        $list = DataProviderMain::execQuery($sql);
+        $list = DataProvider::execQuery($sql);
         while ($row = mysqli_fetch_array($list)) {
             $id = $row["CatId"];
             $name = $row["CatName"];
