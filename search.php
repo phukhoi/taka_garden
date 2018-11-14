@@ -4,12 +4,12 @@ session_start();
 if (!isset($_SESSION["IsLogin"])) {
     $_SESSION["IsLogin"] = 0; // chưa đăng nhập
 }
-require_once '/entities/categories.php';
-require_once '/entities/classify.php';
-require_once '/helper/Utils.php';
-require_once '/entities/Products.php';
-require_once '/helper/CartProcessing.php';
-require_once '/helper/Context.php';
+require_once './entities/categories.php';
+require_once './entities/classify.php';
+require_once './helper/Utils.php';
+require_once './entities/Products.php';
+require_once './helper/CartProcessing.php';
+require_once './helper/Context.php';
 
 // đặt hàng
 if (isset($_POST["txtMaSP"])) {
@@ -102,7 +102,7 @@ if(isset($_POST["btnSearch"]))
             	<div class="container">
                     <div class="row">
                         <div class="col-md-4 col-sm-5">
-                            <div class="logo"><a href="home.html"><abbr title="Logo"><img src="img/logo-small.png" /></abbr></a> </div>
+                            <div class="logo"><a href="index.php"><abbr title="Logo"><img src="img/logo-small.png" /></abbr></a> </div>
                         </div>
                         <div class="col-md-4 col-sm-4">
                             <div class="search">
@@ -310,7 +310,7 @@ if(isset($_POST["btnSearch"]))
 												<span class="price"><?php echo number_format($list[$i]->getPrice());?> VNĐ</span>
 											</div>
 											<?php if($_SESSION['IsLogin']) { ?>
-											<a href="#" onClick="putProID('<?php echo $pId; ?>')" class="lbutton">Đặt hàng</a>
+											<a href="#" onClick="putProID('<?php echo $list[$i]->proId; ?>')" class="lbutton">Đặt hàng</a>
 											<?php }  else { ?>
 											<a href="login.php" class="lbutton">Đặt hàng</a>
 											<?php }?>

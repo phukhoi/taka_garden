@@ -1,5 +1,5 @@
 <?php
-require_once 'helper/DataProvider.php';
+require_once $_SERVER['DOCUMENT_ROOT'] . '/helper/DataProvider.php';
 class Classify {
 var $CId, $CName;
         

@@ -1,6 +1,6 @@
 <?php
 
-
+require_once $_SERVER['DOCUMENT_ROOT'] . '/helper/DataProvider.php';
 class OrderDetail {
 
     var $id, $orderID, $proID, $quantity, $price, $amount;
@@ -64,7 +64,7 @@ class OrderDetail {
 
     public function add() {
 
-        $sql = "insert into OrderDetails (OrderID, ProID, Quantity, Price, Amount)
+        $sql = "insert into orderdetails (OrderID, ProID, Quantity, Price, Amount)
                 values($this->orderID, $this->proID, $this->quantity, $this->price, $this->amount)";
 
         DataProvider::execQuery($sql);

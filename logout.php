@@ -16,8 +16,8 @@ and open the template in the editor.
     <body>
         <?php
         
-        require_once '/helper/Context.php';
-        require_once '/helper/Utils.php';
+        require_once './helper/Context.php';
+        require_once './helper/Utils.php';
         
         Context::destroy();
         Utils::RedirectTo('index.php');

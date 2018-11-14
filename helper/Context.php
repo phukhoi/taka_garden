@@ -1,10 +1,14 @@
 <?php
 
-include '../entities/User.php';
 
-class Context {
+require_once DOCUMENT_ROOT . '/entities/User.php';
 
-    public static function isLogged() {
+
+class Context
+{
+
+    public static function isLogged()
+    {
 
         $ret = false;
 
@@ -24,10 +28,11 @@ class Context {
         return $ret;
     }
 
-    public static function destroy() {
+    public static function destroy()
+    {
         $_SESSION['IsLogin'] = 0;
         unset($_SESSION['CurrentUser']);
-        
+
         unset($_SESSION['Cart']);
 
         /*if (isset($_COOKIE['UserName'])) {

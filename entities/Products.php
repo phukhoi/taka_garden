@@ -1,5 +1,5 @@
 <?php
-
+// require_once('../helper/DataProvider.php');
 /* 
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -222,6 +222,7 @@ Class Products
 
     public static function loadProductByProId($p_proId)
     {
+
         $sql = "select * from products where ProID = $p_proId";
         $list = DataProvider::execQuery($sql);
         if ($row = mysqli_fetch_array($list)) {

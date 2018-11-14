@@ -5,13 +5,16 @@ ini_set("display_errors", 0);
 if (!isset($_SESSION["IsLogin"])) {
     $_SESSION["IsLogin"] = 0; // chưa đăng nhập
 }
-require_once '/entities/categories.php';
-require_once '/entities/classify.php';
-require_once '/helper/Utils.php';
-require_once '/entities/Products.php';
-require_once '/helper/CartProcessing.php';
-require_once '/helper/Context.php';
-require_once '/helper/SessionFunction.php';
+require_once './entities/categories.php';
+require_once './entities/classify.php';
+require_once './helper/Utils.php';
+require_once './entities/Products.php';
+require_once './helper/CartProcessing.php';
+require_once './helper/Context.php';
+require_once './helper/SessionFunction.php';
+require_once './entities/Order.php';
+require_once './entities/OrderDetail.php';
+
 if (!Context::isLogged()) {
     Utils::RedirectTo('login.php?retUrl=cart.php');
 }
@@ -124,7 +127,7 @@ $listProduct2 = Products::loadProductsByCatId(3);
             	<div class="container">
                     <div class="row">
                         <div class="col-md-4 col-sm-5">
-                            <div class="logo"><a href="home.html"><abbr title="Logo"><img src="img/logo-small.png" /></abbr></a> </div>
+                            <div class="logo"><a href="index.php"><abbr title="Logo"><img src="img/logo-small.png" /></abbr></a> </div>
                         </div>
                         <div class="col-md-4 col-sm-4">
                             <div class="search">
@@ -293,15 +296,9 @@ $listProduct2 = Products::loadProductsByCatId(3);
                          <?php flash( 'message' ); ?>
                          <?php
                         // lập hoá đơn
-
-                            require_once '/entities/Order.php';
-                            require_once '/entities/OrderDetail.php';
-                            require_once '/entities/Products.php';
-
                             if (isset($_POST['btnLapHD'])) {
                                 $date = time();
                                 $user = $_SESSION['CurrentUser'];
-
                                 $total = 0;
                                 foreach ($_SESSION['Cart'] as $masp => $solg) {
                                     $p = Products::loadProductByProId($masp);
@@ -330,7 +327,9 @@ $listProduct2 = Products::loadProductsByCatId(3);
                                 $query = $_SERVER['PHP_SELF'];
                                 $path = pathinfo($query);
                                 $url = $path['basename'];
-                                Utils::RedirectTo($url);
+                               // Utils::RedirectTo($url);
+								//echo("<meta http-equiv='refresh' content='1'>"); //Refresh by HTTP META
+								echo '<div class="" id="msg-flash">Đặt hàng thành công!</div>';
                             }
                             ?>
                         <div class="main_body">
@@ -351,8 +350,8 @@ $listProduct2 = Products::loadProductsByCatId(3);
                                 <th width="10%" scope="col">Cập nhật</th>
                                 </tr>
                                 <?php 
-                                require_once '/entities/Products.php';
                                 $total = 0;
+								if( !empty( $_SESSION['Cart'] ))  
                                 foreach ($_SESSION['Cart'] as $masp => $soluong){
                                 $p = Products::loadProductByProId($masp);
                                 ?>
