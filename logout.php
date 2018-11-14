@@ -1,4 +1,6 @@
 <?php
+
+define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT']);
 session_start();
 ?>
 

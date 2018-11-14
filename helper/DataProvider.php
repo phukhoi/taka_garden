@@ -34,16 +34,13 @@ class DataProvider
 
     public static function execNonQueryAffectedRows($sql)
     {
-        $cn = mysqli_connect(SERVER, UID, PWD) or
-        die("Không thể kết nối vào máy chủ");
+        $cn = mysqli_connect(SERVER, UID, PWD, DB) or die ('Không thể kết nối tới database');
         mysqli_set_charset($cn, 'UTF8');
-        mysqli_select_db(DB, $cn);
-        mysqli_query("set names 'utf8'");
 
-        if (!mysqli_query($sql, $cn))
+        if (!mysqli_query($cn,$sql))
             die("Lỗi truy vấn: " . mysql_error());
 
-        $affected_rows = mysqli_affected_rows();
+        $affected_rows = mysqli_affected_rows($cn);
         mysqli_close($cn);
 
         return $affected_rows;
@@ -51,16 +48,14 @@ class DataProvider
 
     public static function execNonQueryIdentity($sql)
     {
-        $cn = mysql_connect(SERVER, UID, PWD) or
-        die("Không thể kết nối vào máy chủ");
+        $cn = mysqli_connect(SERVER, UID, PWD, DB) or die ('Không thể kết nối tới database');
         mysqli_set_charset($cn, 'UTF8');
-        mysqli_select_db(DB, $cn);
-        mysqli_query("set names 'utf8'");
 
-        if (!mysqli_query($sql, $cn))
+
+        if (!mysqli_query($cn, $sql ))
             die("Lỗi truy vấn: " . mysql_error());
 
-        $id = mysqli_insert_id();
+        $id = mysqli_insert_id($cn);
         mysqli_close($cn);
 
         return $id;

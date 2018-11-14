@@ -16,7 +16,7 @@ class Search{
                 
         $list = DataProvider::execQuery($sql);
 
-        while ($row = mysql_fetch_array($list)) {
+        while ($row = mysqli_fetch_array ($list)) {
             $proId = $row["ProID"];
             $proName = $row["ProName"];
             $tinyDes = $row["TinyDes"];
@@ -46,7 +46,7 @@ class Search{
 				ORDER BY price DESC limit $offset,$productPerPage";
         $list = DataProvider::execQuery($sql);
 
-        while ($row = mysql_fetch_array($list)) {
+        while ($row = mysqli_fetch_array ($list)) {
             $proId = $row["ProID"];
             $proName = $row["ProName"];
             $tinyDes = $row["TinyDes"];

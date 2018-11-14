@@ -1,7 +1,7 @@
 <?php
+define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT']);
 session_start();
-error_reporting(E_ALL);
-ini_set("display_errors", 0);
+
 if (!isset($_SESSION["IsLogin"])) {
     $_SESSION["IsLogin"] = 0; // chưa đăng nhập
 }
@@ -297,6 +297,7 @@ $listProduct2 = Products::loadProductsByCatId(3);
                          <?php
                         // lập hoá đơn
                             if (isset($_POST['btnLapHD'])) {
+								
                                 $date = time();
                                 $user = $_SESSION['CurrentUser'];
                                 $total = 0;
@@ -309,7 +310,8 @@ $listProduct2 = Products::loadProductsByCatId(3);
                                 $o = new Order(-1, $date, $user, $total);
                                 $o->add();
                                 // thêm nhiều dòng chi tiết hoá đơn
-
+									print_r('222');
+								
                                 foreach ($_SESSION['Cart'] as $masp => $solg) {
                                     $p = Products::loadProductByProId($masp);
 

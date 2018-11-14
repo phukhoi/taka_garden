@@ -40,13 +40,13 @@ if(isset($_POST["btnSearch"]))
 require_once './entities/User.php';
 
 if (isset($_POST["btnDangNhap"])) {
-
+	print_r($_POST);
 	$uid = $_POST["txtTenDN"];
 	$pwd = $_POST["txtMK"];
 
 	$u = new User(-1, $uid, $pwd, '', '', time(), 0);
 	$loginRet = $u->login();
-
+	print_r($loginRet);
 	if ($loginRet) {
 		$_SESSION["IsLogin"] = 1; // đã đăng nhập
 		$_SESSION["CurrentUser"] = $uid;

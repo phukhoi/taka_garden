@@ -19,7 +19,7 @@ class Blog {
         $sql = "select * from blog";
         $list = DataProvider::execQuery($sql);
 
-        while ($row = mysql_fetch_array($list)) {
+        while ($row = mysqli_fetch_array ($list)) {
             $id = $row["id"];
             $name = $row["title"];
             $content = $row["content"];
@@ -40,7 +40,7 @@ class Blog {
 		
         $list = DataProvider::execQuery($sql);
 
-        while ($row = mysql_fetch_array($list)) {
+        while ($row = mysqli_fetch_array ($list)) {
             $blogId = $row["id"];
             $blogName = $row["title"];
             $blogDetail = $row["content"];

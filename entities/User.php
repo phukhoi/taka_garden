@@ -80,7 +80,7 @@ class User {
 		 $sql = "select * from users";
         $list = DataProvider::execQuery($sql);
 
-        while ($row = mysql_fetch_array($list)) {
+        while ($row = mysqli_fetch_array ($list)) {
 
             //$id = $row["ID"];
             $username = $row["Username"];
@@ -119,7 +119,7 @@ class User {
         $sql = "select * from users where Username='$str_username' and Password='$enc_pwd'";
         $list = DataProvider::execQuery($sql);
 
-        if ($row = mysql_fetch_array($list)) {
+        if ($row = mysqli_fetch_array ($list)) {
 
             $this->id = $row["ID"];
             //$this->username = $row["f_Username"];
@@ -151,7 +151,7 @@ class User {
 
         $sql = "select * from users where Username='$username'";
         $list = DataProvider::execQuery($sql);
-        if ($row = mysql_fetch_array($list)) {
+        if ($row = mysqli_fetch_array ($list)) {
             $p = new User(
                     $row["Id"], 
                     $username, "", 
