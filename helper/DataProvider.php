@@ -12,9 +12,9 @@
  * @author Zenit
  */
 define("SERVER", "localhost");
-define("DB", "db_taka");
-define("UID", "user_cms");
-define("PWD", "MNyLxQBetNFNedrf");
+define("DB", "quanlymayanh");
+define("UID", "root");
+define("PWD", "root");
 
 class DataProvider
 {
