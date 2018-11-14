@@ -47,7 +47,7 @@ class Order {
 
         $str_order_date = date('Y-m-d H:i:s', $this->orderDate);
 
-        $sql = "insert into Orders (OrderDate, User, Total) values ('$str_order_date', '$this->userID' , $this->total)";
+        $sql = "insert into orders (OrderDate, User, Total) values ('$str_order_date', '$this->userID' , $this->total)";
         $this->orderID = DataProvider::execNonQueryIdentity($sql);
     }
 

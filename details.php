@@ -4,12 +4,12 @@ session_start();
 if (!isset($_SESSION["IsLogin"])) {
     $_SESSION["IsLogin"] = 0; // chưa đăng nhập
 }
-require_once '/entities/categories.php';
-require_once '/entities/classify.php';
-require_once '/helper/Utils.php';
-require_once '/entities/Products.php';
-require_once '/helper/CartProcessing.php';
-require_once '/helper/Context.php';
+require_once './entities/categories.php';
+require_once './entities/classify.php';
+require_once './helper/Utils.php';
+require_once './entities/Products.php';
+require_once './helper/CartProcessing.php';
+require_once './helper/Context.php';
 // đặt hàng
 if (isset($_POST["btnDatHang"])) {
 	$masp = $_GET["proID"];
@@ -89,7 +89,7 @@ $relatedProduct  = Products::loadProductsByCatId($product->catId);
             	<div class="container">
                     <div class="row">
                         <div class="col-md-4 col-sm-5">
-                            <div class="logo"><a href="home.html"><abbr title="Logo"><img src="img/logo-small.png" /></abbr></a> </div>
+                            <div class="logo"><a href="index.php"><abbr title="Logo"><img src="img/logo-small.png" /></abbr></a> </div>
                         </div>
                         <div class="col-md-4 col-sm-4">
                             <div class="search">
@@ -117,7 +117,7 @@ $relatedProduct  = Products::loadProductsByCatId($product->catId);
                     <nav class="main-navigation">
                         <ul>
                             <li>
-                                <a href="home.html">
+                                <a href="index.php">
                                     <span class="nav-caption">Trang chủ</span>
                                 </a>
                             </li>
@@ -172,7 +172,7 @@ $relatedProduct  = Products::loadProductsByCatId($product->catId);
 					<div class="col-md-12 col-sm-12">
 						<div class="breadcrumbs">
 							<p>
-								<a href="home.html">Trang chủ</a> 
+								<a href="index.php">Trang chủ</a> 
 								<i class="fa fa-caret-right"></i> 
 								<a href="#">Sản phẩm</a> 
 								<i class="fa fa-caret-right"></i>

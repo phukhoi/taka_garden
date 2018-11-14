@@ -64,7 +64,7 @@ class OrderDetail {
 
     public function add() {
 
-        $sql = "insert into OrderDetails (OrderID, ProID, Quantity, Price, Amount)
+        $sql = "insert into orderdetails (OrderID, ProID, Quantity, Price, Amount)
                 values($this->orderID, $this->proID, $this->quantity, $this->price, $this->amount)";
 
         DataProvider::execQuery($sql);

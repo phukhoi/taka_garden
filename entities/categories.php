@@ -1,5 +1,5 @@
 <?php 
-require_once '/helper/DataProvider.php';
+require_once './helper/DataProvider.php';
 
 class categories {
 

@@ -1,4 +1,8 @@
-﻿<!DOCTYPE html>
+﻿<?php
+error_reporting(E_ALL);
+ini_set("display_errors", 1);
+?>
+<!DOCTYPE html>
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
       <meta charset="utf-8" />
@@ -131,7 +135,6 @@ font-size: 16px;"><a href="../index.php" class="btn btn-danger square-btn-adjust
                                             <th>ID</th>
                                             <th> Name</th>
                                             <th>Price</th>
-                                            <th>Type</th>
                                              <th>Quantity</th>
                                         </tr>
                                     </thead>
@@ -142,8 +145,7 @@ font-size: 16px;"><a href="../index.php" class="btn btn-danger square-btn-adjust
                                         <tr>
                                             <td><?php echo $list[$i]->getProID(); ?></td>
                                             <td><?php echo $list[$i]->getProName(); ?></td>
-                                            <td> <?php echo number_format($list[$i]->getPrice()); ?></td>
-                                            <td><?php echo $list[$i]->getClasstify(); ?></td>
+                                            <td> <?php echo number_format($list[$i]->getPrice()); ?></td>                                            
                                             <td> <?php echo $list[$i]->getQuantity(); ?></td>
                                         </tr>
                                         <?php

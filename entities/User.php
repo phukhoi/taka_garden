@@ -1,7 +1,7 @@
 
 <?php
 
-require_once '/helper/DataProvider.php';
+require_once './helper/DataProvider.php';
 
 class User {
 
@@ -76,7 +76,7 @@ class User {
 	
 	public static function loadUserName() {
         $ret = array();
-		 $sql = "select * from Users";
+		 $sql = "select * from users";
         $list = DataProvider::execQuery($sql);
 
         while ($row = mysql_fetch_array($list)) {
@@ -102,7 +102,7 @@ class User {
         $enc_pwd = md5($this->password);
         $str_dob = date('Y-m-d H:i:s', $this->dob);
 
-        $sql = "insert into Users (Username, Password, Name, Email, DOB, Permission) "
+        $sql = "insert into users (Username, Password, Name, Email, DOB, Permission) "
                 . "values('$str_username', '$enc_pwd', '$str_name', '$str_email', '$str_dob', $this->permission)";
 
         //echo $sql;
@@ -115,7 +115,7 @@ class User {
 
         $str_username = str_replace("'", "''", $this->username);
         $enc_pwd = md5($this->password);
-        $sql = "select * from Users where Username='$str_username' and Password='$enc_pwd'";
+        $sql = "select * from users where Username='$str_username' and Password='$enc_pwd'";
         $list = DataProvider::execQuery($sql);
 
         if ($row = mysql_fetch_array($list)) {
@@ -139,7 +139,7 @@ class User {
         $enc_pwd = md5($pwd);
         $enc_new_pwd = md5($newPwd);
 
-        $sql = "update Users set Password = '$enc_new_pwd' "
+        $sql = "update users set Password = '$enc_new_pwd' "
                 . "where Username = '$username' and Password = '$enc_pwd'";
 
         return DataProvider::execNonQueryAffectedRows($sql);
@@ -148,7 +148,7 @@ class User {
     public static function getInfo($username) {
         $p = NULL;
 
-        $sql = "select * from Users where Username='$username'";
+        $sql = "select * from users where Username='$username'";
         $list = DataProvider::execQuery($sql);
         if ($row = mysql_fetch_array($list)) {
             $p = new User(
