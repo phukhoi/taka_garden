@@ -1,5 +1,47 @@
+<?php
+session_start();
+
+if (!isset($_SESSION["IsLogin"])) {
+    $_SESSION["IsLogin"] = 0; // chưa đăng nhập
+}
+require_once '/entities/categories.php';
+require_once '/entities/classify.php';
+require_once '/helper/Utils.php';
+require_once '/entities/Products.php';
+require_once '/helper/CartProcessing.php';
+require_once '/helper/Context.php';
+
+// đặt hàng
+if (isset($_POST["txtMaSP"])) {
+	$masp = $_POST["txtMaSP"];
+	$solg = 1;
+	CartProcessing::addItem($masp, $solg);
+}
+
+$categories = categories::loadAll();
+
+$listProduct1 = Products::loadProductsByCatId(1);
+$listProduct3 = Products::loadProductsByCatId(2);
+$listProduct2 = Products::loadProductsByCatId(3);
+
+
+?>
+<?php
+	if (!isset($_SESSION['Cart'])) {
+		$_SESSION['Cart'] = array();
+	}
+?>
+
 <?php 
-	require "/functions.php";	
+if(isset($_POST["btnSearch"]))
+{
+	$value = str_replace("'","",$_POST['txtSearch']);
+	$value = str_replace("  ","",$value);
+	$value = str_replace(" ","%",$value);
+
+	$url ="search.php?nsx=".$_POST['selectHSX']."&value=".$value."&gia=".$_POST['selectGia'];
+	Utils::RedirectTo($url);
+}
 ?>
 <!DOCTYPE html>
 <html>
@@ -14,7 +56,6 @@
 		<link rel="stylesheet" href="css/bootstrap.min.css">
 		<link rel="stylesheet" href="css/style.css">
         <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css" />
-		
 	</head>
 	<body class="main">
 		<!-- Header -->
@@ -32,8 +73,24 @@
 							
 							<div class="col-md-6 col-sm-6 col-xs-6">
 								<ul class="topbar-right">
-									<li><i class="fa fa-user" aria-hidden="true"></i><a href="#">Đăng nhập</a></li>
-									<li style="margin-right: 0;"><i class="fa fa-lock" aria-hidden="true"></i><a href="#">Đăng ký</a></li>
+								<?php
+											
+									if (!Context::isLogged()) {
+									?>
+									<li><i class="fa fa-user" aria-hidden="true"></i><a href="login.php">Đăng nhập</a></li>
+									<li style="margin-right: 0;"><i class="fa fa-lock" aria-hidden="true"></i><a href="register.php">Đăng ký</a></li>
+									<!-- <a href="login.php" class="ucmd">Đăng nhập</a> <span style="float:left;">|</span> <a href="register.php" class="ucmd">Đăng ký</a> -->
+									<?php
+									} else {
+										?>
+										<li><i class="fa fa-user" aria-hidden="true"></i><a href="cart.php"><?php echo CartProcessing::countQuantity();?> Sản phẩm</a></li>
+										<li><i class="fa fa-user" aria-hidden="true"></i><a href="profile.php">Chào,  <?php echo $_SESSION["CurrentUser"]; ?>!</a></li>
+										<li><i class="fa fa-user" aria-hidden="true"></i><a href="logout.php">Thoát</a></li>
+										<!-- <a href="cart.php" class="ucmd"><?php echo CartProcessing::countQuantity();?> Sản phẩm</a> <span style="float:left;">|</span> <a href="profile.php" class="ucmd">Hi, <?php echo $_SESSION["CurrentUser"]; ?>!</a> <span style="float:left;">|</span> <a href="logout.php" class="ucmd">Thoát</a> -->
+										<?php
+									}
+									?>
+									
 								</ul>
 							</div>
 						</div>
@@ -48,11 +105,13 @@
                         </div>
                         <div class="col-md-4 col-sm-4">
                             <div class="search">
-                                <form class="search-form" action="#" method="get">
-                                    <input class="s-input" type="text" placeholder="Tìm kiếm sản phẩm..." />
-                                    <button class="btn-search" type="submit">
+                                <form id="frSearch" name="frSearch" class="search-form" action="" method="post">
+                                    <input class="s-input" name="txtSearch" type="text" id="txtSearch" placeholder="Tìm kiếm sản phẩm..." />
+                                    <button id="btnSearch" name="btnSearch" class="btn-search" type="submit">
                                     	<span>Tìm kiếm</span>
                                     </button>
+									<input name="selectHSX" type="text" value='0' class="hidden" id="selectHSX" >
+									<input name="selectGia" type="text" value='100000000' class="hidden" id="selectGia" >
                                 </form>
                             </div>
                         </div>
@@ -82,31 +141,30 @@
                                 </a>
                             </li>
                             <li class="submenu">
-                                <a href="category.html" id="idMenu">
+                                <a href="#" id="idMenu">
                                     <span class="nav-caption">Sản phẩm</span>
                                 </a>
                                 <ul class="sub_menu" >
-                                    <li><a href="category.html">Sen đá</a>
-                                    </li>
-                                    <li><a href="category.html">Xương Rồng</a>
-                                    </li>
-                                    <li><a href="category.html">Terrarium</a>
-                                    </li>
-                                    <li><a href="category.html">Chậu</a>
-                                    </li>
-                                    <li><a href="category.html">Phụ kiện trang trí</a>
-                                    </li>
-                                    <li><a href="category.html">Sản phẩm bán chạy</a>
-                                    </li>
+                                    
+                                    <?php
+                                        for ($i = 0, $n = count($categories); $i < $n; $i++) 
+                                        {
+                                            $name = $categories[$i]->getCatName();
+                                            $id = $categories[$i]->getCatId();
+                                    ?>
+                                    <li><a href="productsByCat.php?catId=<?php echo $id; ?>"><?php echo $name; ?></a></li>
+                                    <?php
+                                    }
+                                    ?>
                                 </ul>
                             </li>
                             <li>
-                                <a href="blog.html">
+                                <a href="blog.php">
                                     <span class="nav-caption">Tin tức</span>
                                 </a>
                             </li>
                             <li>
-                                <a href="blog.html">
+                                <a href="blog.php">
                                     <span class="nav-caption">Khuyến mãi</span>
                                 </a>
                             </li>
@@ -134,14 +192,20 @@
                             </div>
                             <div class="side-box-content">
                             	<ul>
-									<li><a href="category.html">Sen đá</a></li>
-									<li><a href="category.html">Xương rồng</a></li>
-									<li><a href="category.html">Terrarium</a></li>
-									<li><a href="category.html">Chậu</a></li>
-									<li><a href="category.html">Phụ kiện trang trí</a></li>
-									<li><a href="category.html">Sản phẩm bán chạy</a></li>
-									<li><a href="category.html">Sản phẩm nổi bật</a></li>
-									<li><a class="purple" href="category.html">Tất cả sản phẩm</a></li>
+                                <?php
+                            
+                                    for ($i = 0, $n = count($categories); $i < $n; $i++) 
+                                    {
+                                        $name = $categories[$i]->getCatName();
+                                        $id = $categories[$i]->getCatId();
+                                ?>
+                                <li><a href="productsByCat.php?catId=<?php echo $id; ?>"><?php echo $name; ?></a></li>
+                                <?php
+                                    }
+                                    ?>
+									<li><a href="#">Sản phẩm bán chạy</a></li>
+									<li><a href="#">Sản phẩm nổi bật</a></li>
+									<li><a class="purple" href="#">Tất cả sản phẩm</a></li>
 								</ul>
                             </div>
                         </div>
@@ -210,58 +274,27 @@
 							</div>
 							<div class="prod-content">
 								<div class="row">
+									<?php 
+									for($i=0; $i < 4; $i++){
+									?>
 									<div class="col-md-3 col-sm-3 col-xs-6">
 										<div class="prod-item">
 											<div class="item-thumb">
                                             	<span class="label_news "><span class="bf_">Mới</span></span>
-												<img src="img/products/Sen da/Sen da 1.jpg" alt="Product1">
+												<img src="imgs/products/<?php echo $listProduct1[$i]->proId;;?>/1.jpg" alt="Product1">
 											</div>
 											<div class="item-info">
-												<h5><a href="products.html">Sen thơm</a></h5>
-												<span class="price">50.000 VND</span>
+												<h5><a href="details.php?proID=<?php echo $listProduct1[$i]->proId;?>"><?php echo $listProduct1[$i]->proName; ?></a></h5>
+												<span class="price"><?php echo number_format($listProduct1[$i]->getPrice());?> VNĐ</span>
 											</div>
+											<?php if($_SESSION['IsLogin']) { ?>
+											<a href="#" onClick="putProID('<?php echo $pId; ?>')" class="lbutton">Đặt hàng</a>
+											<?php }  else { ?>
+											<a href="login.php" class="lbutton">Đặt hàng</a>
+											<?php }?>
 										</div>
 									</div>
-									
-									<div class="col-md-3 col-sm-3 col-xs-6">
-										<div class="prod-item">
-											<div class="item-thumb">
-                                            	
-												<img src="img/products/Sen da/Sen Đất xanh.jpg" alt="Product1">
-											</div>
-											<div class="item-info">
-												<h5><a href="products.html">Sen Đất xanh</a></h5>
-												<span class="price">50.000 VND</span>
-											</div>
-										</div>
-									</div>
-									
-									
-									<div class="col-md-3 col-sm-3 col-xs-6">
-										<div class="prod-item">
-											<div class="item-thumb">
-                                            	<span class="sale_count"><span class="bf_">- 7% </span></span>
-												<img src="img/products/Sen da/Sen Đô La.jpg" alt="Product1">
-											</div>
-											<div class="item-info">
-												<h5><a href="products.html">Sen Đô La</a></h5>
-												<span class="price">50.000 VND</span>
-											</div>
-										</div>
-									</div>
-									
-									
-									<div class="col-md-3 col-sm-3 col-xs-6">
-										<div class="prod-item">
-											<div class="item-thumb">
-												<img src="img/products/Sen da/Sen Thược Dược.jpg" alt="Product1">
-											</div>
-											<div class="item-info">
-												<h5><a href="products.html">Sen Thược Dược</a></h5>
-												<span class="price">50.000 VND</span>
-											</div>
-										</div>
-									</div>
+									<?php }?>
 								</div>
 							</div>
 						 </div>
@@ -278,59 +311,29 @@
 								<h2>Xương rồng</h2>
 							</div>
 							<div class="prod-content">
-								<div class="row">
+								<div class="row">									
+									<?php 
+									for($i=0; $i < 4; $i++){
+									?>
 									<div class="col-md-3 col-sm-3 col-xs-6">
 										<div class="prod-item">
 											<div class="item-thumb">
-                                             <span class="sale_count"><span class="bf_">- 10% </span></span>
-												<img src="img/products/Xuong rong/Gymno.jpg" alt="Product1">
+											<span class="sale_count"><span class="bf_">- 10% </span></span>
+												<img src="imgs/products/<?php echo $listProduct2[$i]->proId;;?>/1.jpg" alt="Product1">
 											</div>
 											<div class="item-info">
-												<h5><a href="products.html">Gymno</a></h5>
-												<span class="price">50.000 VND</span>
+											<h5><a href="details.php?proID=<?php echo $listProduct2[$i]->proId;?>"><?php echo $listProduct2[$i]->proName; ?></a></h5>
+												<span class="price"><?php echo number_format($listProduct2[$i]->getPrice());?> VNĐ</span>
 											</div>
+											<?php if($_SESSION['IsLogin']) { ?>
+											<a href="#" onClick="putProID('<?php echo $pId; ?>')" class="lbutton">Đặt hàng</a>
+											<?php }  else { ?>
+											<a href="login.php" class="lbutton">Đặt hàng</a>
+											<?php }?>
+
 										</div>
 									</div>
-									
-									<div class="col-md-3 col-sm-3 col-xs-6">
-										<div class="prod-item">
-											<div class="item-thumb">
-                                           		
-												<img src="img/products/Xuong rong/Thiên nga.jpg" alt="Product1">
-											</div>
-											<div class="item-info">
-												<h5><a href="products.html">Thiên nga</a></h5>
-												<span class="price">50.000 VND</span>
-											</div>
-										</div>
-									</div>
-									
-									
-									<div class="col-md-3 col-sm-3 col-xs-6">
-										<div class="prod-item">
-											<div class="item-thumb">
-												<img src="img/products/Xuong rong/Thần long mini.jpg" alt="Product1">
-											</div>
-											<div class="item-info">
-												<h5><a href="products.html">Thần long mini</a></h5>
-												<span class="price">50.000 VND</span>
-											</div>
-										</div>
-									</div>
-									
-									
-									<div class="col-md-3 col-sm-3 col-xs-6">
-										<div class="prod-item">
-											<div class="item-thumb">
-                                            	<span class="label_news "><span class="bf_">Mới</span></span>
-												<img src="img/products/Xuong rong/Trứng chim.jpg" alt="Product1">
-											</div>
-											<div class="item-info">
-												<h5><a href="products.html">Trứng chim</a></h5>
-												<span class="price">50.000 VND</span>
-											</div>
-										</div>
-									</div>
+									<?php }?>
 								</div>
 							</div>
 						 </div>
@@ -347,60 +350,28 @@
 							</div>
 							<div class="prod-content">
 								<div class="row">
-									<div class="col-md-3 col-sm-3 col-xs-6">
-										<div class="prod-item">
-                                        	
-											<div class="item-thumb">
-												<img src="img/products/Terrarium/Terrarium Red Car.jpg" alt="Product1">
-											</div>
-											<div class="item-info">
-												<h5><a href="products.html">Terrarium Red Car</a></h5>
-												<span class="price">50.000 VND</span>
-											</div>
-										</div>
-									</div>
-									
+								<?php 
+									for($i=0; $i < 4; $i++){
+									?>
 									<div class="col-md-3 col-sm-3 col-xs-6">
 										<div class="prod-item">
 											<div class="item-thumb">
-                                            <span class="label_news "><span class="bf_">Mới</span></span>
-												<img src="img/products/Terrarium/Terrarium Vespa.jpg" alt="Product1">
+											<span class="sale_count"><span class="bf_">- 10% </span></span>
+												<img src="imgs/products/<?php echo $listProduct3[$i]->proId;;?>/1.jpg" alt="Product1">
 											</div>
 											<div class="item-info">
-												<h5><a href="products.html">Terrarium Vespa</a></h5>
-												<span class="price">50.000 VND</span>
+											<h5><a href="details.php?proID=<?php echo $listProduct3[$i]->proId;?>"><?php echo $listProduct3[$i]->proName; ?></a></h5>
+												<span class="price"><?php echo number_format($listProduct3[$i]->getPrice());?> VNĐ</span>
 											</div>
+											<?php if($_SESSION['IsLogin']) { ?>
+											<a href="#" onClick="putProID('<?php echo $pId; ?>')" class="lbutton">Đặt hàng</a>
+											<?php }  else { ?>
+											<a href="login.php" class="lbutton">Đặt hàng</a>
+											<?php }?>
+
 										</div>
 									</div>
-									
-									
-									<div class="col-md-3 col-sm-3 col-xs-6">
-										<div class="prod-item">
-											<div class="item-thumb">
-                                            
-												<img src="img/products/Terrarium/Terrarium Yell Car.jpg" alt="Product1">
-											</div>
-											<div class="item-info">
-												<h5><a href="products.html">Terrarium Yell Car</a></h5>
-												<span class="price">50.000 VND</span>
-											</div>
-										</div>
-									</div>
-									
-									
-									<div class="col-md-3 col-sm-3 col-xs-6">
-										<div class="prod-item">
-											<div class="item-thumb">
-                                           		 	
-                                                 <span class="sale_count"><span class="bf_">- 5% </span></span>
-												<img src="img/products/Terrarium/Terrarium Pink Car.jpg" alt="Product1">
-											</div>
-											<div class="item-info">
-												<h5><a href="products.html">Terrarium Pink Car</a></h5>
-												<span class="price">50.000 VND</span>
-											</div>
-										</div>
-									</div>
+									<?php }?>
 								</div>
 							</div>
 						 </div>
@@ -488,7 +459,9 @@
 					<!-- /Like us on Social -->
 					
 				</div>
-						
+				<form id="form1" name="form1" method="post" action="">
+				<input type="hidden" id="txtMaSP" name="txtMaSP" />
+				</form>		
 			</div>
 			<div id="copyright">&copy; Bản quyền thuộc về <b>Taka Graden</b></div>
         </footer>
@@ -502,5 +475,11 @@
 		<script src="js/bootstrap.min.js"></script>
         <script src="js/jquery-3.3.1.min.js"></script>
         <script src="js/main-script.js"></script>
+		<script type="text/javascript">
+			function putProID(masp) {
+				$("#txtMaSP").val(masp);
+				document.form1.submit();
+			}
+		</script>
 	</body>
 </html>
