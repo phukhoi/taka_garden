@@ -2,7 +2,7 @@
 require_once DOCUMENT_ROOT . '/entities/Products.php';
 require_once DOCUMENT_ROOT . '/entities/categories.php';
 $cate = categories::loadAll();
-$pro = new Products();
+// $pro = new Products();
 if (isset($_POST['type']) && !empty($_POST['type']) && $_POST['type'] == 'add') {
     $target_dir = "uploads/";
     $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);

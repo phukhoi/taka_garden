@@ -1305,3 +1305,9 @@ input{
     padding: 2px;
     border-radius: 5px;
 }
+.pleft-40{
+    padding-left: 40px;
+}
+.order-note textarea{
+    width: 100%;
+}

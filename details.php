@@ -67,6 +67,9 @@ $relatedProduct  = Products::loadProductsByCatId($product->catId);
 											
 									if (!Context::isLogged()) {
 									?>
+									<li><i class="fa fa-user" aria-hidden="true"></i><a
+                                            href="cart.php"><?php echo CartProcessing::countQuantity(); ?> Sản phẩm</a>
+                                	</li>
 									<li><i class="fa fa-user" aria-hidden="true"></i><a href="login.php">Đăng nhập</a></li>
 									<li style="margin-right: 0;"><i class="fa fa-lock" aria-hidden="true"></i><a href="register.php">Đăng ký</a></li>
 									<!-- <a href="login.php" class="ucmd">Đăng nhập</a> <span style="float:left;">|</span> <a href="register.php" class="ucmd">Đăng ký</a> -->
@@ -244,7 +247,7 @@ $relatedProduct  = Products::loadProductsByCatId($product->catId);
                                     <!-- <p class="price-pro">Giá: <span>50.000VND </span><del>69.000VND</del></p> -->
                                     <p class="in-stock">Tình trạng: <?php echo $product->quantity > 0 ? 'Còn hàng' : 'Hết hàng' ?></p>
                                     <?php 
-                                    if( $_SESSION["IsLogin"] && $product->quantity > 0 ){
+                                    if( $product->quantity > 0 ){
                                     ?>
 										<form id="fr"  name="fr" method="post" action="">
 											<p class="number">Số lượng: <input type="number" id="txtSoLuong" name="txtSoLuong" min="0" style="width:50px" value="0"/></p>

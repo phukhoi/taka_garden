@@ -79,6 +79,9 @@ if(isset($_POST["btnSearch"]))
 											
 									if (!Context::isLogged()) {
 									?>
+									<li><i class="fa fa-user" aria-hidden="true"></i><a
+                                            href="cart.php"><?php echo CartProcessing::countQuantity(); ?> Sản phẩm</a>
+                                	</li>
 									<li><i class="fa fa-user" aria-hidden="true"></i><a href="login.php">Đăng nhập</a></li>
 									<li style="margin-right: 0;"><i class="fa fa-lock" aria-hidden="true"></i><a href="register.php">Đăng ký</a></li>
 									<!-- <a href="login.php" class="ucmd">Đăng nhập</a> <span style="float:left;">|</span> <a href="register.php" class="ucmd">Đăng ký</a> -->
@@ -310,11 +313,7 @@ if(isset($_POST["btnSearch"]))
 												<h5><a href="details.php?proID=<?php echo $list[$i]->proId;?>"><?php echo $list[$i]->proName; ?></a></h5>
 												<span class="price"><?php echo number_format($list[$i]->getPrice());?> VNĐ</span>
 											</div>
-											<?php if($_SESSION['IsLogin']) { ?>
 											<a href="#" onClick="putProID('<?php echo $list[$i]->proId; ?>')" class="lbutton">Đặt hàng</a>
-											<?php }  else { ?>
-											<a href="login.php" class="lbutton">Đặt hàng</a>
-											<?php }?>
 										</div>
 									</div>
                                     <?php 

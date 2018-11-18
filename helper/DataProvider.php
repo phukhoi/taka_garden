@@ -14,7 +14,7 @@
 define("SERVER", "localhost");
 define("DB", "quanlymayanh");
 define("UID", "root");
-define("PWD", "root");
+define("PWD", "");
 
 class DataProvider
 {

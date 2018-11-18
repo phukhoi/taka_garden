@@ -104,6 +104,9 @@ if (isset($_POST["btnDangKy"])) {
 
                             if (!Context::isLogged()) {
                                 ?>
+                                <li><i class="fa fa-user" aria-hidden="true"></i><a
+                                            href="cart.php"><?php echo CartProcessing::countQuantity(); ?> Sản phẩm</a>
+                                </li>
                                 <li><i class="fa fa-user" aria-hidden="true"></i><a href="login.php">Đăng nhập</a></li>
                                 <li style="margin-right: 0;"><i class="fa fa-lock" aria-hidden="true"></i><a
                                             href="register.php">Đăng ký</a></li>

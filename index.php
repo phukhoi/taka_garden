@@ -84,6 +84,9 @@ if (isset($_POST["btnSearch"])) {
 
                             if (!Context::isLogged()) {
                                 ?>
+                                <li><i class="fa fa-user" aria-hidden="true"></i><a
+                                            href="cart.php"><?php echo CartProcessing::countQuantity(); ?> Sản phẩm</a>
+                                </li>
                                 <li><i class="fa fa-user" aria-hidden="true"></i><a href="login.php">Đăng nhập</a></li>
                                 <li style="margin-right: 0;"><i class="fa fa-lock" aria-hidden="true"></i><a
                                             href="register.php">Đăng ký</a></li>
@@ -302,12 +305,8 @@ if (isset($_POST["btnSearch"])) {
                                             <span class="price"><?php echo number_format($listProduct1[$i]->getPrice()); ?>
                                                 VNĐ</span>
                                         </div>
-                                        <?php if ($_SESSION['IsLogin']) { ?>
-                                            <a href="#" onClick="putProID('<?php echo $listProduct1[$i]->proId; ?>')"
-                                               class="lbutton">Đặt hàng</a>
-                                        <?php } else { ?>
-                                            <a href="login.php" class="lbutton">Đặt hàng</a>
-                                        <?php } ?>
+                                        <a href="#" onClick="putProID('<?php echo $listProduct1[$i]->proId; ?>')"
+                                            class="lbutton">Đặt hàng</a>
                                     </div>
                                 </div>
                             <?php } ?>
@@ -345,13 +344,8 @@ if (isset($_POST["btnSearch"])) {
                                             <span class="price"><?php echo number_format($listProduct2[$i]->getPrice()); ?>
                                                 VNĐ</span>
                                         </div>
-                                        <?php if ($_SESSION['IsLogin']) { ?>
-                                            <a href="#" onClick="putProID('<?php echo $listProduct2[$i]->proId; ?>')"
-                                               class="lbutton">Đặt hàng</a>
-                                        <?php } else { ?>
-                                            <a href="login.php" class="lbutton">Đặt hàng</a>
-                                        <?php } ?>
-
+                                        <a href="#" onClick="putProID('<?php echo $listProduct2[$i]->proId; ?>')"
+                                            class="lbutton">Đặt hàng</a>
                                     </div>
                                 </div>
                             <?php } ?>
@@ -388,13 +382,8 @@ if (isset($_POST["btnSearch"])) {
                                             <span class="price"><?php echo number_format($listProduct3[$i]->getPrice()); ?>
                                                 VNĐ</span>
                                         </div>
-                                        <?php if ($_SESSION['IsLogin']) { ?>
-                                            <a href="#" onClick="putProID('<?php echo $listProduct3[$i]->proId; ?>')"
+                                        <a href="#" onClick="putProID('<?php echo $listProduct3[$i]->proId; ?>')"
                                                class="lbutton">Đặt hàng</a>
-                                        <?php } else { ?>
-                                            <a href="login.php" class="lbutton">Đặt hàng</a>
-                                        <?php } ?>
-
                                     </div>
                                 </div>
                             <?php } ?>

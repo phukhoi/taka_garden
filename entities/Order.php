@@ -2,13 +2,14 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/helper/DataProvider.php';
 class Order {
 
-    var $orderID, $orderDate, $userID, $total;
+    var $orderID, $orderDate, $userID, $total, $note;
 
-    function __construct($orderID, $orderDate, $userID, $total) {
+    function __construct($orderID, $orderDate, $userID, $total, $note) {
         $this->orderID = $orderID;
         $this->orderDate = $orderDate;
         $this->userID = $userID;
         $this->total = $total;
+        $this->note = $note;
     }
 
     public function getOrderID() {
@@ -26,6 +27,9 @@ class Order {
     public function getTotal() {
         return $this->total;
     }
+    public function getNote() {
+        return $this->note;
+    }
 
     public function setOrderID($orderID) {
         $this->orderID = $orderID;
@@ -42,12 +46,15 @@ class Order {
     public function setTotal($total) {
         $this->total = $total;
     }
+    public function setNote($note) {
+        $this->note = $note;
+    }
 
     public function add() {
 		
         $str_order_date = date('Y-m-d H:i:s', $this->orderDate);
 
-        $sql = "insert into orders (orderDate, user, total) values ('$str_order_date', '$this->userID' , $this->total)";
+        $sql = "insert into orders (orderDate, user, total, note, status) values ('$str_order_date', '$this->userID' , $this->total, '$this->note', 0)";
 		
         $this->orderID = DataProvider::execNonQueryIdentity($sql);
     }

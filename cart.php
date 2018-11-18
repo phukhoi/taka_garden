@@ -16,7 +16,7 @@ require_once './entities/Order.php';
 require_once './entities/OrderDetail.php';
 
 if (!Context::isLogged()) {
-    Utils::RedirectTo('login.php?retUrl=cart.php');
+    // Utils::RedirectTo('login.php?retUrl=cart.php');
 }
 // đặt hàng
 if (isset($_POST["txtMaSP"])) {
@@ -103,6 +103,9 @@ $listProduct2 = Products::loadProductsByCatId(3);
 											
 									if (!Context::isLogged()) {
 									?>
+                                    <li><i class="fa fa-user" aria-hidden="true"></i><a
+                                            href="cart.php"><?php echo CartProcessing::countQuantity(); ?> Sản phẩm</a>
+                                    </li>
 									<li><i class="fa fa-user" aria-hidden="true"></i><a href="login.php">Đăng nhập</a></li>
 									<li style="margin-right: 0;"><i class="fa fa-lock" aria-hidden="true"></i><a href="register.php">Đăng ký</a></li>
 									<!-- <a href="login.php" class="ucmd">Đăng nhập</a> <span style="float:left;">|</span> <a href="register.php" class="ucmd">Đăng ký</a> -->
@@ -300,6 +303,11 @@ $listProduct2 = Products::loadProductsByCatId(3);
 								
                                 $date = time();
                                 $user = $_SESSION['CurrentUser'];
+                                if( $user == null ){
+                                    $note = $_POST['order_note'];
+                                }else{
+                                    $note = '';
+                                }
                                 $total = 0;
                                 foreach ($_SESSION['Cart'] as $masp => $solg) {
                                     $p = Products::loadProductByProId($masp);
@@ -307,10 +315,10 @@ $listProduct2 = Products::loadProductsByCatId(3);
                                     $total += $amount;
                                     Products::UpdateQuantity($masp,$solg);
                                 }
-                                $o = new Order(-1, $date, $user, $total);
+                                $o = new Order(-1, $date, $user, $total, $note);
+                                // var_dump($o);die();
                                 $o->add();
                                 // thêm nhiều dòng chi tiết hoá đơn
-									print_r('222');
 								
                                 foreach ($_SESSION['Cart'] as $masp => $solg) {
                                     $p = Products::loadProductByProId($masp);
@@ -372,6 +380,16 @@ $listProduct2 = Products::loadProductsByCatId(3);
                             </table>
                             
                             <?php if($total != 0) {?>
+                                <?php if( !Context::isLogged() ){ ?>
+                                <div class="col-md-12 pleft-40">
+                                    <div class="col-md-6">
+                                        <p>Nếu chưa có tài khoản, bạn vui lòng để lại thông tin liên hệ (tên, số điện thoại) để shop liên hệ giao hàng</p>
+                                    </div>
+                                    <div class="col-md-6 order-note">
+                                        <textarea name='order_note' rows='4' placeholder="Thông tin liên hệ"></textarea>
+                                    </div>
+                                </div>
+                                <?php } ?>
                                 <input type="submit" id="btnLapHD" name="btnLapHD" value="Lập hoá đơn" class="blueButton" style="margin-left:50px;" />
                                 <?php } ?>
                         </form>
