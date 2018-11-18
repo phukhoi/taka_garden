@@ -28,6 +28,7 @@ $categories = categories::loadAll();
 $listProduct1 = Products::loadProductsByCatId(1);
 $listProduct3 = Products::loadProductsByCatId(2);
 $listProduct2 = Products::loadProductsByCatId(3);
+$listSaleProduct = Products::loadProductsFlashSale();
 
 
 ?>
@@ -60,6 +61,17 @@ if (isset($_POST["btnSearch"])) {
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/style.css">
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/4.4.0/css/font-awesome.min.css"/>
+
+    <!-- Latest compiled and minified CSS -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css" integrity="sha384-BVYiiSIFeK1dGmJRAkycuHAHRg32OmUcww7on3RYdg4Va+PmSTsz/K68vbdEjh4u" crossorigin="anonymous">
+
+    <!-- Optional theme -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap-theme.min.css" integrity="sha384-rHyoN1iRsVXV4nD0JutlnGaslCJuC7uwjduW9SVrLvRYooPp2bWYgmgJQIXwl/Sp" crossorigin="anonymous">
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.2.1/jquery.min.js"></script>
+    <!-- Latest compiled and minified JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js" integrity="sha384-Tc5IQib027qvyjSMfHjOMaLkfuWVxZxUPnCJA7l2mCWNIpG9mGCD8wGNIcPD7Txa" crossorigin="anonymous"></script>
+    <link href="https://fonts.googleapis.com/css?family=Josefin+Sans:300,400,700&subset=latin-ext" rel="stylesheet">
+    
 </head>
 <body class="main">
 <!-- Header -->
@@ -199,6 +211,39 @@ if (isset($_POST["btnSearch"])) {
 <div class="content">
     <div class="content-top">
         <div class="container">
+            <!-- Item slider-->
+            <div class="row">
+                <div class="col-xs-12 col-sm-12 col-md-12">
+                    <div class="carousel carousel-showmanymoveone slide" id="itemslider">
+                        <div class="carousel-inner">
+                            <?php foreach($listSaleProduct as $key=>$item){ 
+                                if($key==0){
+                                    $active = 'active';
+                                }else{
+                                    $active = '';
+                                }
+                                ?>
+                            <div class="item <?php echo $active;?>">
+                                <div class="col-xs-12 col-sm-6 col-md-2">
+                                    <a href="details.php?proID=<?php echo $item->proId; ?>"><img src="imgs/products/<?php echo $item->proId; ?>/1.jpg" class="img-responsive center-block"></a>
+                                    <h4 class="text-center"><?php echo $item->proName; ?> </h4>
+                                    <h5 class="text-center"><?php echo number_format($item->getPrice()); ?> VNĐ</h5>
+                                    <h4 class="text-center line-through"><?php echo number_format($item->salesprice); ?>VNĐ</h4>
+                                    <h4 class="text-center"><a href="#" onClick="putProID('<?php echo $item->proId; ?>')"
+                                               class="lbutton">Mua ngay</a></h4>
+                                </div>
+                            </div>
+                            <?php } ?>
+                        </div>
+
+                        <div id="slider-control">
+                            <a class="left carousel-control" href="#itemslider" data-slide="prev"><img src="https://image.flaticon.com/icons/svg/271/271220.svg" alt="Left" class="img-responsive"></a>
+                            <a class="right carousel-control" href="#itemslider" data-slide="next"><img src="https://image.flaticon.com/icons/svg/271/271228.svg" alt="Right" class="img-responsive"></a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        <!-- Item slider end-->
             <div class="row">
                 <div class="sidebar col-md-3 col-sm-3 col-xs-12">
                     <div class="side-box-heading">
@@ -295,7 +340,7 @@ if (isset($_POST["btnSearch"])) {
                                     <div class="prod-item">
                                         <div class="item-thumb">
                                             <span class="label_news "><span class="bf_">Mới</span></span>
-                                            <img src="imgs/products/<?php echo $listProduct1[$i]->proId;; ?>/1.jpg"
+                                            <img src="imgs/products/<?php echo $listProduct1[$i]->proId; ?>/1.jpg"
                                                  alt="Product1">
                                         </div>
                                         <div class="item-info">
@@ -487,14 +532,15 @@ if (isset($_POST["btnSearch"])) {
 <!-- /Backtotop -->
 
 <!-- Javascript -->
-<script src="js/bootstrap.min.js"></script>
-<script src="js/jquery-3.3.1.min.js"></script>
+<!-- <script src="js/bootstrap.min.js"></script> -->
+<!-- <script src="js/jquery-3.3.1.min.js"></script> -->
 <script src="js/main-script.js"></script>
 <script type="text/javascript">
     function putProID(masp) {
         $("#txtMaSP").val(masp);
         document.form1.submit();
     }
+
 </script>
 </body>
 </html>

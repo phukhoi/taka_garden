@@ -242,10 +242,13 @@ $relatedProduct  = Products::loadProductsByCatId($product->catId);
                                   <abbr title="Hoa xương rồng"><img src="imgs/products/<?php echo $product->proId;;?>/1.jpg" style="max-width:400px"></abbr>
                                 </div>
                                 <div class="col-md-6 details-pro">
-                                	<h2><?php echo $product->proName ?></h2>
-                                    <p class="price-pro">Giá: <span><?php echo number_format($product->price); ?> VND </span></p>
-                                    <!-- <p class="price-pro">Giá: <span>50.000VND </span><del>69.000VND</del></p> -->
-                                    <p class="in-stock">Tình trạng: <?php echo $product->quantity > 0 ? 'Còn hàng' : 'Hết hàng' ?></p>
+									<h2><?php echo $product->proName ?></h2>
+									<?php if($product->onsale == 1){ ?>
+										<p class="price-pro">Giá: <span><?php echo number_format($product->salesprice); ?> VND </span><del><?php echo number_format($product->price); ?> VND</del></p>
+									<?php }else{ ?>
+										<p class="price-pro">Giá: <span><?php echo number_format($product->price); ?> VND </span></p>
+									<?php } ?>
+									<p class="in-stock">Tình trạng: <?php echo $product->quantity > 0 ? 'Còn hàng' : 'Hết hàng' ?></p>
                                     <?php 
                                     if( $product->quantity > 0 ){
                                     ?>

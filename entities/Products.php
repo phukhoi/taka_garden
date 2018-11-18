@@ -9,9 +9,9 @@ require_once $_SERVER['DOCUMENT_ROOT'] . '/helper/DataProvider.php';
 
 Class Products
 {
-    var $proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify;
+    var $proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify, $onsale, $salesprice;
 
-    function __construct($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify)
+    function __construct($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify, $onsale, $salesprice)
     {
         $this->proId = $proId;
         $this->proName = $proName;
@@ -23,6 +23,8 @@ Class Products
         $this->view = $view;
         $this->dayAdd = $dayAdd;
         $this->classify = $classify;
+        $this->onsale = $onsale;
+        $this->salesprice = $salesprice;
     }
 
     public function getProId()
@@ -179,11 +181,11 @@ Class Products
             $quantity = $row["Quantity"];
             $view = $row["NView"];
             $dayAdd = $row["DayAdd"];
-            //$catId = $row["CatID"];
+            $salesprice = $row["salesprice"];
             $catId = $p_catId;
             $classify = $row["Classify"];
-
-            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify);
+            $onsale = $row['onsale'];
+            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify, $onsale, $salesprice);
             array_push($ret, $p);
         }
 
@@ -238,8 +240,10 @@ Class Products
             $view = $row["NView"];
             $dayAdd = $row["DayAdd"];
             $classify = $row["Classify"];
+            $onsale = $row['onsale'];
+            $salesprice = $row['salesprice'];
 
-            $p = new Products($p_proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify);
+            $p = new Products($p_proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify, $onsale, $salesprice);
             return $p;
         }
 
@@ -451,6 +455,33 @@ Class Products
             //$classify =$row["Classify"];
 
             $p = new Products($proId, $proName, '', '', '', '', '', '', '', '');
+            array_push($ret, $p);
+        }
+
+        return $ret;
+    }
+    public static function loadProductsFlashSale()
+    {
+        $ret = array();
+
+        $sql = "select * from products where onsale = 1";
+        $list = DataProvider::execQuery($sql);
+
+        while ($row = mysqli_fetch_array($list)) {
+            $proId = $row["ProID"];
+            $proName = $row["ProName"];
+            $tinyDes = $row["TinyDes"];
+            $fullDes = $row["FullDes"];
+            $price = $row["Price"];
+            $quantity = $row["Quantity"];
+            $view = $row["NView"];
+            $dayAdd = $row["DayAdd"];
+            $salesprice = $row["salesprice"];
+            $catId = $row['CatID'];
+            $classify = $row["Classify"];
+            $onsale = $row["onsale"];
+
+            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify,$onsale, $salesprice );
             array_push($ret, $p);
         }
 

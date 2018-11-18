@@ -311,7 +311,11 @@ $listProduct2 = Products::loadProductsByCatId(3);
                                 $total = 0;
                                 foreach ($_SESSION['Cart'] as $masp => $solg) {
                                     $p = Products::loadProductByProId($masp);
-                                    $amount = $p->getPrice() * $solg;
+                                    if( $p->onsale ){
+                                        $amount = $p->salesprice * $solg;
+                                    }else{
+                                        $amount = $p->getPrice() * $solg;
+                                    }
                                     $total += $amount;
                                     Products::UpdateQuantity($masp,$solg);
                                 }
@@ -322,9 +326,13 @@ $listProduct2 = Products::loadProductsByCatId(3);
 								
                                 foreach ($_SESSION['Cart'] as $masp => $solg) {
                                     $p = Products::loadProductByProId($masp);
-
-                                    $amount = $p->getPrice() * $solg;
-                                    $detail = new OrderDetail(-1, $o->getOrderID(), $masp, $solg, $p->getPrice(), $amount);
+                                    if( $p->onsale ){
+                                        $amount = $p->salesprice * $solg;
+                                        $detail = new OrderDetail(-1, $o->getOrderID(), $masp, $solg, $p->salesprice, $amount);
+                                    }else{
+                                        $amount = $p->getPrice() * $solg;
+                                        $detail = new OrderDetail(-1, $o->getOrderID(), $masp, $solg, $p->getPrice(), $amount);
+                                    }
                                     $detail->add();
                                 }
 
@@ -367,14 +375,20 @@ $listProduct2 = Products::loadProductsByCatId(3);
                                 ?>
                                 <tr align="center">
                                 <td><?php echo $p->getProName(); ?></td>
-                                <td><?php echo number_format($p->getPrice()); ?></td>
+                                <td><?php if( $p->onsale ){ echo number_format($p->salesprice); }else{ echo number_format($p->getPrice() ); }?></td>
                                 <td><input type="text" id="sl_<?php echo $masp; ?>" name="sl_<?php echo $masp; ?>" style="width: 60px" value="<?php echo $soluong; ?>" /></td>
-                                <td><?php echo number_format($p->getPrice() * $soluong); ?></td>
+                                <td><?php if( $p->onsale ){ echo number_format($p->salesprice * $soluong); }else{ echo number_format($p->getPrice() * $soluong); }?></td>
                                 <td><img src="imgs/delete-icon.png" width="16" height="16" alt="Delete" style="cursor: pointer" onclick="putProID('X', <?php echo $masp; ?>);"></td>
                                 <td><img src="imgs/save-icon.png" width="16" height="16" alt="Update" style="cursor: pointer" onclick="putProID('S', <?php echo $masp; ?>);"></td>
                                 </tr>
                                 <?php 
-                                $total += $p->getPrice() * $soluong;
+                                if( $p->onsale ){
+                                    $total += $p->salesprice * $soluong;
+
+                                }else{
+
+                                    $total += $p->getPrice() * $soluong;
+                                }
                                 }?>
                             </tbody>
                             </table>
