@@ -199,6 +199,9 @@ $type = isset($_GET['type']) ? $_GET['type'] : '';
                 case 'edit':
                     include "page/products/edit.php";
                     break;
+                case 'delete':
+                    include "page/products/delete.php";
+                    break;
                 default:
                     include "page/products/index.php";
                     break;

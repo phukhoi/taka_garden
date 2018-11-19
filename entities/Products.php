@@ -129,10 +129,10 @@ Class Products
 
     public static function saveProducts($param)
     {
-        $sql = "INSERT INTO products (ProName, CatID, Price,TinyDes,FullDes,Classify,Quantity,NView,DayAdd)
-    VALUES ('" . $param['ProName'] . "', '" . $param['CatID'] . "', '" . $param['Price'] . "', '" . $param['TinyDes'] . "', '" . $param['FullDes'] . "', '1', '" . $param['Quantity'] . "', '1', '" . date('Y-m-d') . "')";
+        $sql = "INSERT INTO products (ProName, CatID, Price,TinyDes,FullDes,Classify,Quantity,NView,DayAdd, onsale, salesprice)
+    VALUES ('" . $param['ProName'] . "', '" . $param['CatID'] . "', '" . $param['Price'] . "', '" . $param['TinyDes'] . "', '" . $param['FullDes'] . "', '1', '" . $param['Quantity'] . "', '1', '" . date('Y-m-d') . "', '".$param['onsale']."', '".$param['salesprice']."')";
 
-        $result = DataProvider::execQuery($sql);
+        $result = DataProvider::execNonQueryIdentity($sql);
         return $result;
     }
 
@@ -503,6 +503,12 @@ Class Products
         $catId = $params['catId'];  
 
         $sql = "update products set ProName= '$ProName', CatID = $catId, Price = $Price, onsale = $onsale, salesprice = $salesprice, FullDes = '$FullDes', Quantity = $Quantity where ProID = $id";
+        DataProvider::execQuery($sql);
+        return true;
+    }
+
+    public static function delete($id){
+        $sql = "DELETE FROM products where ProID = $id";
         DataProvider::execQuery($sql);
         return true;
     }

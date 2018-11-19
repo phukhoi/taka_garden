@@ -2,34 +2,37 @@
 require_once DOCUMENT_ROOT . '/entities/Products.php';
 require_once DOCUMENT_ROOT . '/entities/categories.php';
 $cate = categories::loadAll();
-// $pro = new Products();
 if (isset($_POST['type']) && !empty($_POST['type']) && $_POST['type'] == 'add') {
-    $target_dir = "uploads/";
-    $target_file = $target_dir . basename($_FILES["fileToUpload"]["name"]);
-    $uploadOk = 1;
-    $imageFileType = strtolower(pathinfo($target_file, PATHINFO_EXTENSION));
-// Check if image file is a actual image or fake image
-    if (isset($_POST["submit"])) {
-        $check = getimagesize($_FILES["fileToUpload"]["tmp_name"]);
-        if ($check !== false) {
-            echo "File is an image - " . $check["mime"] . ".";
-            $uploadOk = 1;
-        } else {
-            echo "File is not an image.";
-            $uploadOk = 0;
-        }
-    }
-
+   
+    
     $param = [
         'ProName' => $_POST['ProName'],
         'CatID' => $_POST['CatID'],
         'Price' => $_POST['Price'],
         'TinyDes' => '',
         'FullDes' => $_POST['FullDes'],
-        'Quantity' => $_POST['Quantity']
+        'Quantity' => $_POST['Quantity'],
+        'onsale' => isset($_POST['onsale']) ? 1 : 0,
+        'salesprice' => $_POST['salesprice'],
     ];
-    $pro_new = Products::saveProducts($param);
-    header("Location: /admin&act=products&alert=success");
+    $pro_id = Products::saveProducts($param);
+    if( isset($_FILES['file']) && $_FILES['file']['name'] != '' && $pro_id > 0 ){
+        $path = $_FILES['file']['name'];
+        $ext = pathinfo($path, PATHINFO_EXTENSION);
+        $file_name = '1.'.$ext;
+        $product_id = $pro_id;
+        $file = $_FILES['file']['tmp_name'];
+        if (!file_exists("../imgs/products/".$product_id)) {
+            mkdir("../imgs/products/".$product_id, 0777, true);
+        }
+        $path = "../imgs/products/".$product_id."/".$file_name;
+        if(move_uploaded_file($file, $path)){
+            echo "Tải tập tin thành công";
+        }else{
+            echo "Tải tập tin thất bại";
+        }
+    }
+    header("Location: /admin/?act=products&type=edit&id=".$pro_id);
     die();
 }
 ?>
@@ -61,6 +64,14 @@ if (isset($_POST['type']) && !empty($_POST['type']) && $_POST['type'] == 'add') 
                             <label>Price</label>
                             <input type="number" name="Price" class="form-control" value="1">
                         </div>
+                        <div class="form-group">
+                            <label>Flash Sale</label>
+                            <input type="checkbox" id="onsale" name="onsale"  >
+                        </div>
+                        <div class="form-group">
+                            <label>Sales Price</label>
+                            <input type="number" name="salesprice" class="form-control" value="0">
+                        </div>
                         <div class="form-group hidden">
                             <label>TinyDes</label>
                             <textarea id="editor1" name="TinyDes" rows="10" cols="80"></textarea>
@@ -86,7 +97,7 @@ if (isset($_POST['type']) && !empty($_POST['type']) && $_POST['type'] == 'add') 
                         </div>
                         <div class="form-group">
                             <label>Image</label>
-                            <input type="file" name="fileToUpload" id="fileToUpload">
+                            <input type="file" name="file" id="file">
                         </div>
                         <div class="box-footer">
                             <button type="submit" class="btn btn-success">SAVE</button>

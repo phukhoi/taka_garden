@@ -39,7 +39,7 @@ echo count($list);
                                 <td class="text-center">
                                     <a href="/admin/?act=products&type=edit&id=<?php echo $list[$i]->getProID(); ?>"
                                        role="button" class="btn btn-success btn-xs"><i class="fa fa-fw fa-edit"></i></a>
-                                    <a role="button" class="btn btn-danger btn-xs"><i
+                                    <a href="/admin/?act=products&type=delete&id=<?php echo $list[$i]->getProID(); ?>" class="btn btn-danger btn-xs delete-product" onclick="return confirm_click();"><i
                                                 class="fa fa-fw fa-trash-o"></i></a>
                                 </td>
                             </tr>
@@ -53,4 +53,10 @@ echo count($list);
 </div>
 
 
+<script type="text/javascript">
+function confirm_click()
+{
+    return confirm("Are you sure ?");
+}
 
+</script>

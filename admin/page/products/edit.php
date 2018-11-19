@@ -40,7 +40,7 @@ if(isset($_POST['editProduct'])){
     }
 
     $result = Products::updateProduct($params);
-    // header("Refresh:0");
+    header("Refresh:0");
 }
 
 ?>
