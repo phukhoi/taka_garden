@@ -24,7 +24,7 @@ if (isset($_POST['type']) && !empty($_POST['type']) && $_POST['type'] == 'add') 
         'ProName' => $_POST['ProName'],
         'CatID' => $_POST['CatID'],
         'Price' => $_POST['Price'],
-        'TinyDes' => $_POST['TinyDes'],
+        'TinyDes' => '',
         'FullDes' => $_POST['FullDes'],
         'Quantity' => $_POST['Quantity']
     ];
@@ -61,7 +61,7 @@ if (isset($_POST['type']) && !empty($_POST['type']) && $_POST['type'] == 'add') 
                             <label>Price</label>
                             <input type="number" name="Price" class="form-control" value="1">
                         </div>
-                        <div class="form-group">
+                        <div class="form-group hidden">
                             <label>TinyDes</label>
                             <textarea id="editor1" name="TinyDes" rows="10" cols="80"></textarea>
                         </div>

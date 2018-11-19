@@ -1,4 +1,5 @@
 <?php
+ob_start();
 define('DOCUMENT_ROOT', $_SERVER['DOCUMENT_ROOT']);
 ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
@@ -274,3 +275,4 @@ $type = isset($_GET['type']) ? $_GET['type'] : '';
 <script src="assets/admin.js"></script>
 </body>
 </html>
+<?php ob_end_flush(); ?>

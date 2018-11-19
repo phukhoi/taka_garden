@@ -11,7 +11,7 @@ Class Products
 {
     var $proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify, $onsale, $salesprice;
 
-    function __construct($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify, $onsale, $salesprice)
+    function __construct($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify, $onsale = 0, $salesprice = 0)
     {
         $this->proId = $proId;
         $this->proName = $proName;
@@ -155,8 +155,10 @@ Class Products
             $dayAdd = $row["DayAdd"];
             $catId = $row["CatID"];
             $classify = $row["Classify"];
+            $onsale = $row["onsale"];
+            $salesprice = $row["salesprice"];
 
-            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify);
+            $p = new Products($proId, $proName, $tinyDes, $fullDes, $price, $quantity, $catId, $view, $dayAdd, $classify, $onsale, $salesprice);
             array_push($ret, $p);
         }
 
@@ -486,5 +488,22 @@ Class Products
         }
 
         return $ret;
+    }
+
+    public static function updateProduct($params){
+        // print_r($params);die();
+        $id = $params['id'];
+        $ProName = $params['ProName'];
+        $Quantity = $params['Quantity'];
+        $Price = $params['Price'];
+        $onsale = $params['onsale'];
+        $salesprice = $params['salesprice'];
+        $TinyDes = $params['TinyDes'];
+        $FullDes = $params['FullDes'];
+        $catId = $params['catId'];  
+
+        $sql = "update products set ProName= '$ProName', CatID = $catId, Price = $Price, onsale = $onsale, salesprice = $salesprice, FullDes = '$FullDes', Quantity = $Quantity where ProID = $id";
+        DataProvider::execQuery($sql);
+        return true;
     }
 } // end class
