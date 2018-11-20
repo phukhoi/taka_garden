@@ -129,4 +129,10 @@ class Order {
         DataProvider::execQuery($sql);
         return true;
     }
+
+    public static function delete($id){
+        $sql = "DELETE FROM orders where orderId = $id";
+        DataProvider::execQuery($sql);
+        return true;
+    }
 }
