@@ -137,6 +137,19 @@ $type = isset($_GET['type']) ? $_GET['type'] : '';
                         </li>
                     </ul>
                 </li>
+                <li class="treeview">
+                    <a href="#">
+                        <i class="fa fa-files-o"></i>
+                        <span>Orders</span>
+                        <span class="pull-right-container">
+              <i class="fa fa-angle-left pull-right"></i>
+            </span>
+                    </a>
+                    <ul class="treeview-menu">
+                        <li><a href="/admin?act=orders&type=list"><i class="fa fa-circle-o"></i> List</a></li>
+                        </li>
+                    </ul>
+                </li>
                 <li>
                     <a href="pages/widgets.html">
                         <i class="fa fa-th"></i> <span>Widgets</span>
@@ -220,6 +233,19 @@ $type = isset($_GET['type']) ? $_GET['type'] : '';
                     break;
             }
             break;
+        case 'orders':
+        switch ($type) {
+            case 'list':
+                include "page/orders/list.php";
+                break;
+            case 'edit':
+                include "page/orders/edit.php";
+                break;
+            default:
+                include "page/orders/list.php";
+                break;
+        }
+        break;
         default:
             include 'page/index.php';
             break;

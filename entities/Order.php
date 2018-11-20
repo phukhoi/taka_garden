@@ -2,14 +2,15 @@
 require_once $_SERVER['DOCUMENT_ROOT'] . '/helper/DataProvider.php';
 class Order {
 
-    var $orderID, $orderDate, $userID, $total, $note;
+    var $orderID, $orderDate, $userID, $total, $note, $status;
 
-    function __construct($orderID, $orderDate, $userID, $total, $note) {
+    function __construct($orderID, $orderDate, $userID, $total, $note='', $status=0) {
         $this->orderID = $orderID;
         $this->orderDate = $orderDate;
         $this->userID = $userID;
         $this->total = $total;
         $this->note = $note;
+        $this->status = $status;
     }
 
     public function getOrderID() {
@@ -59,4 +60,64 @@ class Order {
         $this->orderID = DataProvider::execNonQueryIdentity($sql);
     }
 
+    public static function loadAll(){
+        $ret = array();
+
+        $sql = "select * from orders";
+        $list = DataProvider::execQuery($sql);
+
+        while ($row = mysqli_fetch_array($list)) {
+            $orderId = $row["orderId"];
+            $orderDate = $row["orderDate"];
+            $user = $row["user"];
+            $total = $row["total"];
+            $note = $row["note"];
+            $status = $row["status"];
+
+            $p = new Order($orderId, $orderDate, $user, $total, $note, $status);
+            array_push($ret, $p);
+        }
+
+        return $ret;
+    }
+
+    public static function loadOrderbyId($id){
+        $sql = "select * from orders where orderID = $id";
+        $list = DataProvider::execQuery($sql);
+        if ($row = mysqli_fetch_array($list)) {
+
+            $orderId = $row["orderId"];
+            $orderDate = $row["orderDate"];
+            $user = $row["user"];
+            $total = $row["total"];
+            $note = $row["note"];
+            $status = $row["status"];
+            $p = new Order($orderId, $orderDate, $user, $total, $note, $status);
+            return $p;
+        }
+
+        return NULL;
+    }
+
+    public static function loadOrderDetail($id){
+        $ret = array();
+
+        $sql = "SELECT * FROM orderdetails o LEFT JOIN products p on o.ProId = p.ProID  where orderID = $id ";
+        $list = DataProvide::execQuery($sql);
+        print_r($list);die();
+        while ($row = mysqli_fetch_array($list)) {
+            $p = array(
+                'orderId' => $row["orderId"],
+                'orderDate' => $row["orderDate"],
+                'user' => $row["user"],
+                'total' => $row["total"],
+                'note' => $row["note"],
+                'status' => $row["status"]
+                
+            );
+            array_push($ret, $p);
+        }
+
+        return $ret;
+    }
 }
