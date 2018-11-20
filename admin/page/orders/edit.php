@@ -6,7 +6,7 @@ $id = $_GET["id"];
 $order = Order::loadOrderbyId($id);
 // load order detail
 $orderDetail = Order::loadOrderDetail($id);
-print_r($orderDetail);die();
+// print_r($order);die();
 
 
 ?>
@@ -14,7 +14,13 @@ print_r($orderDetail);die();
 <?php 
 
 if(isset($_POST['editOrder'])){
-    
+    $note = isset($_POST['note']) ? $_POST['note']: '';
+    $status = isset($_POST['status']) ? $_POST['status']: 0;
+    $params = [
+        'note' => $note,
+        'status' => $status
+    ];
+    $result = Order::updateOrder($id, $params);
     header("Refresh:0");
 }
 
@@ -49,13 +55,37 @@ if(isset($_POST['editOrder'])){
                         </div>
                         <div class="form-group">
                             <label>Total</label>
-                            <input type="number" name="total" class="form-control"
+                            <input type="number" name="total" class="form-control" disabled
                                    value="<?php echo $order->total; ?>">
                         </div>
                         <div class="form-group">
                             <label>Note</label>
                             <textarea type="text" rows="5" name="note" class="form-control"
-                                   value="<?php echo $order->note; ?>"></textarea>
+                                   value="<?php echo $order->note; ?>"><?php echo $order->note; ?></textarea>
+                        </div>
+                        <div class="form-group">
+                            <table id="example1" class="table table-bordered table-striped">
+                                <thead>
+                                <tr>
+                                    <th class="text-center">Product ID</th>
+                                    <th class="text-center">Product Name</th>
+                                    <th class="text-center">Quantity</th>
+                                    <th class="text-center">Total</th>
+                                    
+                                </tr>
+                                </thead>
+                                <tbody>
+                                    <?php foreach($orderDetail as $item) { ?>
+                                        <tr>
+                                            <td><?php echo $item['proID']; ?></td>
+                                            <td><?php echo $item['proName'] ?></td>
+                                            <td><?php echo $item['quantity']; ?></td>
+                                            <td> <?php echo number_format($item['amount']); ?></td>
+                                        </tr>
+                                    <?php } ?>
+                                
+                                </tbody>
+                            </table>
                         </div>
                     </div>
                     <div class="col-md-3">
