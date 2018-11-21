@@ -39,7 +39,7 @@ if (isset($_POST["btnSearch"])) {
 require_once DOCUMENT_ROOT . '/entities/User.php';
 
 if (isset($_POST["btnDangNhap"])) {
-
+    
     $uid = $_POST["txtTenDN"];
     $pwd = $_POST["txtMK"];
 

@@ -1,7 +1,7 @@
 <?php
 require_once DOCUMENT_ROOT . '/entities/Products.php';
 $list = Products::loadProductsAll();
-echo count($list);
+
 ?>
 <div class="content-wrapper">
     <section class="content-header">

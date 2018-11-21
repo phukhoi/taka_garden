@@ -7,7 +7,7 @@
 - Trang danh mục sản phẩm có chức năng lọc sản phẩm => ok
 - Thêm sản phẩm vào trang yêu thích (nút yêu thích trên màn hình)
 - Chức năng: Flash Sale (https://www.sendo.vn) : Hiện sản phẩm theo thời gian
-- KH vãng lai vẫn mua hàng được nếu k đăng ký tài khoản
+- KH vãng lai vẫn mua hàng được nếu k đăng ký tài khoản => done
 - Phần admin:
 + thêm,xóa,sửa: Sản phẩm, tin tức, Khách hàng, kh yêu thích, nhân viên (người dùng), thông tin trang tỉnh
 - Làm trên local (xampp) và úp lên web free như somee.com

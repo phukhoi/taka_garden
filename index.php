@@ -10,7 +10,6 @@ if (!isset($_SESSION["IsLogin"])) {
     $_SESSION["IsLogin"] = 0; // chưa đăng nhập
 }
 require_once 'entities/categories.php';
-require_once 'entities/classify.php';
 require_once 'helper/Utils.php';
 require_once 'entities/Products.php';
 require_once 'helper/CartProcessing.php';

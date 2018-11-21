@@ -24,7 +24,8 @@ if(isset($_POST['editProduct'])){
     
     if( isset($_FILES['file']) && $_FILES['file']['name'] != '' ){
         $path = $_FILES['file']['name'];
-        $ext = pathinfo($path, PATHINFO_EXTENSION);
+        $ext = pathinfo($path, PATHINFO_EXTENSION); //get file extension
+
         $file_name = '1.'.$ext;
         $product_id = $_POST['id'];
         $file = $_FILES['file']['tmp_name'];
